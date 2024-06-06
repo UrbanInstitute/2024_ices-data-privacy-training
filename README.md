@@ -2,7 +2,7 @@
 
 ## Welcome
 
-This set of notes is for the [2024 American Statistical Association Council of Chapters Traveling Course](https://community.amstat.org/coc/chapterresources/travelingcourse) "[Data Visualization with R]()".
+This book contains materials for **Introduction to Data Privacy and Data Synthesis Techniques** at the [2024 International Conference on Establishment Statistics](https://ww2.amstat.org/meetings/ices/2024/) in Glasgow, Scotland. 
 
 ## Abstract
 
