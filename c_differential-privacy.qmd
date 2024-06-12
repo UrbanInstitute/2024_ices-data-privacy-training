@@ -1,0 +1,5 @@
+# Differential Privacy {.unnumbered}
+
+In this section, we’ll introduce what differential privacy is, cover the fundamentals of differential privacy, and review a few differential privacy use cases.
+
+By the end, you will be learn the difference between traditional statistical data privacy methods and differentially private methods, implement basic differential privacy mechanisms, and comprehend applications of differential privacy.

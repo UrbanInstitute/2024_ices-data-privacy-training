@@ -1,0 +1,5 @@
+# Data Privacy and Synthesis {.unnumbered}
+
+In this section we'll cover the motivations for and fundamentals of data privacy, and the basics of data synthesis. 
+
+By the end, you will be able to articulate threats to data privacy, implement basic statistical disclosure control methods, and comprehend approaches to data synthesis. 

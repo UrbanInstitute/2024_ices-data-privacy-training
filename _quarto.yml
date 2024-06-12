@@ -1,0 +1,38 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "Introduction to Data Privacy and Data Synthesis Techniques"
+  author: "Claire McKay Bowen, Maddie Pickens, and Aaron R. Williams"
+  date: today
+  chapters:
+    - index.qmd
+    - part: a_intro.qmd
+      chapters:
+      - 01_introduction_to_data_privacy.qmd
+    - part: b_data-privacy-and-synthetic-data.qmd
+      chapters:
+      - 02_synthetic-data.qmd
+      - 03_disclosure_utility_metrics.qmd
+      - 04_synthesis-demo.qmd
+      - 05_synthetic-data-case-studies.qmd
+    - part: c_differential-privacy.qmd
+      chapters:
+      - 06_introduction_to_differential_privacy.qmd
+      - 07_differential_privacy_details.qmd
+      - 08_differential_privacy_case_studies.qmd
+    - d_where-to-go.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+
+format:
+  html:
+    css: www/styles.css
+    theme: cosmo
+    number-depth: 3
+
+
+

@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Introduction to Data Privacy and Data Synthesis Techniques - Where to Go From Here</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./08_differential_privacy_case_studies.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="www/styles.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./d_where-to-go.html">Where to Go From Here</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introduction to Data Privacy and Data Synthesis Techniques</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./a_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction and Setup</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_introduction_to_data_privacy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Data Privacy</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./b_data-privacy-and-synthetic-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Privacy and Synthesis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_synthetic-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Synthetic Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_disclosure_utility_metrics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Utility and Disclosure Risk Metrics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_synthesis-demo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data Synthesis Demo</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_synthetic-data-case-studies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Synthetic Data Case Studies</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./c_differential-privacy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Differential Privacy</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_introduction_to_differential_privacy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Introduction to Differential Privacy and Formal Privacy</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_differential_privacy_details.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Formally Private Definitions, Fundamental Mechanisms, and Algorithms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_differential_privacy_case_studies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Formally Private Case Studies</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./d_where-to-go.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Where to Go From Here</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#an-appropriate-and-interpretable-privacy-loss-budget" id="toc-an-appropriate-and-interpretable-privacy-loss-budget" class="nav-link active" data-scroll-target="#an-appropriate-and-interpretable-privacy-loss-budget">An appropriate and interpretable privacy loss budget</a></li>
+  <li><a href="#more-applied-work" id="toc-more-applied-work" class="nav-link" data-scroll-target="#more-applied-work">More Applied Work</a></li>
+  <li><a href="#communication-education-and-resources" id="toc-communication-education-and-resources" class="nav-link" data-scroll-target="#communication-education-and-resources">Communication, Education, and Resources</a>
+  <ul class="collapse">
+  <li><a href="#lack-of-resources" id="toc-lack-of-resources" class="nav-link" data-scroll-target="#lack-of-resources">Lack of resources</a></li>
+  <li><a href="#not-enough-tools" id="toc-not-enough-tools" class="nav-link" data-scroll-target="#not-enough-tools">Not enough tools</a></li>
+  <li><a href="#few-people-who-are-experts" id="toc-few-people-who-are-experts" class="nav-link" data-scroll-target="#few-people-who-are-experts">Few people who are experts</a></li>
+  </ul></li>
+  <li><a href="#community" id="toc-community" class="nav-link" data-scroll-target="#community">Community</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Where to Go From Here</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p><span class="citation" data-cites="hu2023advancing">Hu and Bowen (<a href="references.html#ref-hu2023advancing" role="doc-biblioref">2023</a>)</span> and <span class="citation" data-cites="williams2023promise">Williams and Bowen (<a href="references.html#ref-williams2023promise" role="doc-biblioref">2023</a>)</span> offer comprehensive reviews of the existing challenges and opportunities in synthetic data generation and formal privacy, respectively. While we touch upon some key points here, we highly recommend referring to their papers for a deeper understanding.</p>
+<section id="an-appropriate-and-interpretable-privacy-loss-budget" class="level2">
+<h2 class="anchored" data-anchor-id="an-appropriate-and-interpretable-privacy-loss-budget">An appropriate and interpretable privacy loss budget</h2>
+<p>Earlier today, we discussed how early differential privacy researchers thought <span class="math inline">\(\epsilon=1\)</span> or <span class="math inline">\(\epsilon=2\)</span> were considered the upper bounds, whereas we are seeing larger values in more recent applications. <span class="citation" data-cites="rogers2020linkedin">Rogers et al. (<a href="references.html#ref-rogers2020linkedin" role="doc-biblioref">2020</a>)</span> created the table below on what were the daily and monthly cost for various formally private methods implemented in industry. The 2020 Census used <span class="math inline">\(\epsilon=17.14\)</span>, which converts to a ratio of 27,784,809. However, in the table below, the largest value of <span class="math inline">\(\epsilon\)</span> is 769, which converts to a ratio rapidly approaching <span class="math inline">\(\infty\)</span>.</p>
+<p><strong>Fig. 7: Table from <span class="citation" data-cites="rogers2020linkedin">Rogers et al. (<a href="references.html#ref-rogers2020linkedin" role="doc-biblioref">2020</a>)</span></strong> <img src="www/images/privacy-param.png" class="img-fluid" width="800"></p>
+<p>Second, it is difficult to interpret parameters for formally private methods. This may explain why it is difficult to know what values of <span class="math inline">\(\epsilon\)</span> are appropriate and why <span class="math inline">\(\epsilon\)</span> values are higher than originally theorized. For pure DP, <span class="math inline">\(\epsilon\)</span> places a bound on a log ratio of two probabilities. This ratio represents a difficult to conceive relative risk and is on a log scale.</p>
+<div id="tbl-ratio" class="anchored">
+<table class="table">
+<caption>Table&nbsp;1: The ratio increases exponentially with <span class="math inline">\(\epsilon\)</span></caption>
+<thead>
+<tr class="header">
+<th><span class="math inline">\(\epsilon\)</span></th>
+<th style="text-align: left;">Ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0.25</td>
+<td style="text-align: left;">1.28</td>
+</tr>
+<tr class="even">
+<td>0.5</td>
+<td style="text-align: left;">1.65</td>
+</tr>
+<tr class="odd">
+<td>0.75</td>
+<td style="text-align: left;">2.12</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td style="text-align: left;">2.72</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td style="text-align: left;">7.39</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td style="text-align: left;">54.60</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td style="text-align: left;">403.43</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td style="text-align: left;">2980.96</td>
+</tr>
+<tr class="odd">
+<td>10</td>
+<td style="text-align: left;">22026.47</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><a href="#tbl-ratio">Table&nbsp;<span>1</span></a> shows demonstrates how quickly the ratio in the definition of pure DP explodes as <span class="math inline">\(\epsilon\)</span> increases by modest amounts. The community does not have a clear way to reason about the difference between a ratio of 2,000 and a ratio of 22,000. On its own, <span class="math inline">\(\epsilon\)</span> and other privacy parameters in formal privacy, are like a speedometer without any labels. The parameters can show you faster or slower, but they can’t tell you how quickly you are going. And without knowing exactly how fast you are going, it’s tough to drive near the speed limit. This is why we need people to add context and interpretability to the speedometer.</p>
+</section>
+<section id="more-applied-work" class="level2">
+<h2 class="anchored" data-anchor-id="more-applied-work">More Applied Work</h2>
+<p>Part of the reason we do not know what are reasonable values of <span class="math inline">\(\epsilon\)</span> is because most differential privacy research is still theoretical. We need to apply differential privacy to understand the privacy-utility trade-off more fully under several conditions. For example, privacy experts should explore more small, practical formally private applications rather than highly complicated, theoretical scenarios to better discern what are some of the data challenges and how we should address them. The same idea applies to other SDC methods, such as synthetic data, where we do not have enough use cases.</p>
+<p>For synthetic data generation, tuning risk-utility trade-off is a much under-researched area that holds promise for creating more effective and efficient synthesis. We also have not developed good synthetic data methods that handle survey weights, longitudinal, and texts well despite the great demand and abundance of such data types requiring privacy protection. Additionally, we need more computationally-feasible synthetic data approaches for spatial information.</p>
+</section>
+<section id="communication-education-and-resources" class="level2">
+<h2 class="anchored" data-anchor-id="communication-education-and-resources">Communication, Education, and Resources</h2>
+<section id="lack-of-resources" class="level3">
+<h3 class="anchored" data-anchor-id="lack-of-resources">Lack of resources</h3>
+<p>Suppose someone told you that they had data that contained records of individuals, including demographics such as their age, their sex, and their race along with financial information. They want to explore applying machine learning methods to gain unique insights into the data. What resources would you recommend?</p>
+<p>Now, suppose this person, with the same data, asked you how to apply data privacy and confidentiality methods. Before this course, would you have any idea what resources to recommend?</p>
+<p>Likely, your response to these questions drastically varied!</p>
+<p>High profile use cases, like the 2020 Census data products in the United States, have improved communication about synthetic data and other data privacy concepts, such as differential privacy. But, the available materials are limited compared to what is needed.</p>
+</section>
+<section id="not-enough-tools" class="level3">
+<h3 class="anchored" data-anchor-id="not-enough-tools">Not enough tools</h3>
+<p>Another challenge is having enough computational tools to implement the various SDC methods. While researchers should understand the basics of SDC methods, they do not necessarily need to thoroughly understand them.</p>
+</section>
+<section id="few-people-who-are-experts" class="level3">
+<h3 class="anchored" data-anchor-id="few-people-who-are-experts">Few people who are experts</h3>
+<p>There are very few people who have the technical knowledge and the coding ability to implement SDC methods. Some propose that we need to teach the next generation of data privacy researchers. However, most higher education institutions do not provide data privacy courses. If they are taught, professors usually teach them at the graduate level in computer science departments, which is not representative of those who depend on and contribute to the field.</p>
+</section>
+</section>
+<section id="community" class="level2">
+<h2 class="anchored" data-anchor-id="community">Community</h2>
+<p>These examples emphasize the need for greater involvement of statisticians and data scientists in the synthetic data and broader statistical data privacy community. As of now, most meetings and conferences tend to focus on theoretical aspects within the computer science field. Currently, there does not exist a regular conference on the intersection of data privacy and public policy.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-hu2023advancing" class="csl-entry" role="listitem">
+Hu, Jingchen, and Claire McKay Bowen. 2023. <span>“Advancing Microdata Privacy Protection: A Review of Synthetic Data.”</span> <em>arXiv Preprint arXiv:2308.00872</em>.
+</div>
+<div id="ref-rogers2020linkedin" class="csl-entry" role="listitem">
+Rogers, Ryan, Subbu Subramaniam, Sean Peng, David Durfee, Seunghyun Lee, Santosh Kumar Kancha, Shraddha Sahay, and Parvez Ahammad. 2020. <span>“LinkedIn’s Audience Engagements API: A Privacy Preserving Data Analytics System at Scale.”</span> <em>arXiv Preprint arXiv:2002.05839</em>.
+</div>
+<div id="ref-williams2023promise" class="csl-entry" role="listitem">
+Williams, Aaron R, and Claire McKay Bowen. 2023. <span>“The Promise and Limitations of Formal Privacy.”</span> <em>Wiley Interdisciplinary Reviews: Computational Statistics</em>, e1615.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./08_differential_privacy_case_studies.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Formally Private Case Studies</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

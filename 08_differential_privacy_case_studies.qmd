@@ -1,0 +1,436 @@
+---
+title: "Formally Private Case Studies"
+date: today
+format:
+  html:
+    fig-cap-location: top
+    number_sections: false
+    embed-resources: true
+    code-fold: true
+    toc: true
+    css: ../www/web_report.css
+editor_options:
+  chunk_output_type: console
+execute:
+  warning: false
+  message: false
+bibliography: references.bib
+---
+
+```{=html}
+<style>
+@import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+</style>
+```
+
+```{r setup}
+options(scipen = 999)
+library(tidyverse)
+library(urbnthemes)
+set_urbn_defaults()
+```
+
+## Recap
+
+### Formal privacy
+- Ability to quantify and adjust the privacy-utility trade-off, typically through parameters.
+  - larger $\epsilon$ = less noise added to data = more accuracy, but less privacy
+  - smaller $\epsilon$ = more noise added to data = less accuracy, but more privacy
+- Ability to rigorously and mathematically prove the maximum privacy loss that can result from the release of
+information.
+- Formal privacy definitions also allow one to *compose* multiple statistics. In other words, a data curator can compute
+the total privacy loss from multiple individual information releases.
+    
+### Statistical Disclosure Control Framework
+- Generally releasing confidential data involves the following steps to protect privacy:
+
+![2010 Disclosure Avoidance System Framework](www/images/data_privacy_workflow.png){width="600"}
+    
+### Statistical Disclosure Control Method Steps
+
+1. **Pre-Processing Step:** determining priorities for which statistics to preserve.
+2. **Privacy Step:** applying a sanitizer to the desired statistic.
+3. **Post-Processing Step:** ensuring the results of the statistics are consistent with realistic constraints, such as negative population counts.
+
+![Statistical Disclosure Control Terminology](www/images/privacy-terms.png){width="518"}
+
+## Case Studies
+
+We will cover two case studies, where we will...
+
+- **Motivation:** review the goal and context for the confidential data.
+- **Data:** analyze the data features and structure.
+- **Disclosure Risk:** state which privacy definition and sanitizer is used.
+- **Utility Measures:** outline the utility metrics.
+- **Statistical Disclosure Control Method:** identify what is done at each step in creating the formally private synthetic data method.
+- **Limitations:** discuss any limitations of the formally private synthetic data method.
+
+**Note:** Although the disclosure risk measures are different than synthetic data, we can use the same utility metrics as before to evaluate the quality of the formally private synthetic data.
+
+## 2020 Decennial Census
+
+![2020 Census Logo](www/images/2020-census.png){width="400"}
+
+
+### Motivation
+
+The 2020 Census affects how the United States apportion the 435 seats for the United States House of Representatives, redistrict voting lines, plan for natural disasters, and allocate the $1.5 trillion budget, among many other things.
+
+Since the 1920 Privacy Act, decennial census data have been altered with a privacy-preserving method. Several laws now require the U.S. Census Bureau to protect census data products, but the most cited law is Title 13, which protects individual level data. In addition to the legal requirements, ethically, some might not be comfortable with people knowing there is a high presence of certain racial groups, such as Asian Americans, considering the lingering legacy of internment camps during World War II.
+
+Why is the U.S. Census Bureau updating their disclosure avoidance system (DAS)?
+
+![2010 Disclosure Avoidance System Framework](www/images/2010-das.png){width="700"}
+
+- The technological landscape is constantly evolving. For instance, the tiny computers that fit in our pockets (i.e., smart phones) have more computational power than the average desktop in 2010. The last time Census Bureau updated DAS* was for the 1990 Census by applying data swapping (see Figure 3 for a summary of their process).
+
+**Note:** DAS is the overall statistical disclosure control methodology that the Census Bureau applies to protect their data products.
+
+- To reassess if the U.S. Census Bureau needed an update, they conducted a database reconstruction attack. Essentially, this type of attack evaluates whether there is too many independent statistics being published based on confidential data to recreate the underlying confidential data with little or no error. The Census Bureau tested this by:
+    1. recreating the individual level 2010 Census (i.e., age, sex, race, and Hispanic or Non-Hispanic ethnicity for every individual in each census block) from nine summary tables.
+    2. then uniquely identifying one-in-six records using publicly available data, such as what could be found on Facebook (Leclerc, 2019). This rate is higher for smaller groups.
+- These results are troubling, but a data intruder could not confirm whether a match was correct, or the reconstructed data were correct before the match without access to the actual data.
+
+![2010 Census Reconstruction Attack Framework](www/images/2010-reconstruction.png){width="600"}
+    
+For more information about the reconstruction attack: ["The Census Bureau's Simulated Reconstruction-Abetted Re-identification Attack on the 2010 Census" webinar materials](https://www.census.gov/data/academy/webinars/2021/disclosure-avoidance-series/simulated-reconstruction-abetted-re-identification-attack-on-the-2010-census.html).
+
+**Note:** The U.S. Census Bureau has received criticism for their reconstruction attack. @ruggles2021risk claim that the Census Bureau did not test whether identifying individuals through their reconstruction attack is greater than random guess. Another way to think of it is the analogy of clinical trials, where you must have a control group to see if people get better or not with a treatment. The authors describe the U.S. Census Bureau's reconstruction attack as just the "treatment" group without a good comparison of a control group. In other words, one would expect that some people in the treatment group would get better regardless of getting a treatment or not.
+
+### Data
+
+![U.S. Census Bureau Geographic Levels](www/images/census-geo.png){width="400"}
+
+The entire population of the United States of America. "The goal is to count everyone once, only once, and in the right place." The image above shows the Census Bureau geographic levels for the U.S.
+
+- The 2020 Census Questionnaire contains a total of twelve questions.
+- A person’s answer is limited to the check boxes or fill in the blank boxes, restricting the possible outcomes.
+- The form does not ask how the individuals within the household are related to anyone else filling out their own form.
+
+### Disclosure Risk
+
+- The Census Bureau used zero-concentrated differential privacy (zCDP), which can be converted to $(\epsilon, \delta)$-DP. This is why the U.S. Census Bureau reported the privacy parameter values as $\epsilon=17.14$ and $\delta = 10^{-10}$ for the persons file [@abowd20222020]. 
+- They used the Gaussian Mechanism as the sanitizer.
+
+### Utility Metrics
+
+The Census Bureau checked for several things, such as, but not limited to:
+
+- global metrics
+  - mean absolute error
+  - mean numeric error
+  - root mean squared error
+  - mean absolute percent error
+  - coefficient of variation
+  - total absolute error of shares
+- Specific metrics
+  - redistricting voting lines or school districts
+  - total absolute error of shares metric by county within each state as a share of that state, by incorporated place as a share of that state, and by minor civil divisions as a share of that state
+  
+### Statistical Disclosure Control Method
+
+Below is a summary of the method [@abowd20222020].
+
+1. Pre-Processing Step: Calculate the crosstabulation of all variables for each geographic level (from states to census blocks).
+    - 1 total count
+    - 63 race, 2 ethnicity, 2 voting age
+    - 3 institutional vs. non-institutional group quarter types
+    - 1 residential and 7 possible group quarter types for a total of 8 (e.g., dorms and prisons)
+    - 126 possible combinations of race and ethnicity
+    - 126 possible combinations of race and voting age
+    - 4 possible combinations of ethnicity and voting age
+    - 252 possible combinations of race, ethnicity, and voting age
+    - 2,016 = 252 x 8 possible combinations of race, ethnicity, and voting age at each residential and group quarter type
+
+2. Privacy Step: Apply the Gaussian Mechanism to the 2,016 possible combinations unless that combination has no observations (i.e., treat as a structural zero) at each geographic level.
+3. Post-Processing Step: Implement the TopDown Algorithm (TDA) that enforces the following invariant statistics and constraints.
+    - Invariant statistics
+      - Total population in each state, District of Columbia, and Puerto Rico.
+      - Total number of housing units within each census block.
+      - Number of group quarter facilities by type within each census block.
+    - Constraints:
+      - Counts must be integers
+      - Sums of rows and column margins must sum to the total populations
+      - Counts must be consistent within tables, across tables, and across geographies
+      - If there are zero housing units and zero group quarters at a geographic level, then no people may be assigned to that geography
+      - Number of people in a group quarter is equal to or greater than 1
+      - Number of people in a housing unit or group quarter is less than or equal to 99,999
+      - No one is less than 18 in a group quarter
+
+![2020 Disclosure Avoidance Framework](www/images/2020-das.png){width="600"}
+
+### Limitations
+
+- The TDA is optimized to the block group level, which resulted in the Census Bureau advising census data users to not use block level information.
+- Miscommunication has caused the data user community to be at odds with the U.S. Census Bureau disclosure avoidance system team.
+- Although the Census Bureau selected a value for the privacy-loss parameters, what is considered an appropriate value for the privacy-loss parameters is still an open research question for practical applications.
+
+## Exercise 1
+
+::: {.panel-tabset}
+
+### <font color="#55b748">**Question**</font>
+
+The TDA finds the optimal distribution of counts starting from the state down to census block. Other hierarchies can be applied, such as botton-up from census block to state or from 4-digit NAICS code to 2-digit NAICS code.
+
+Suppose we have establishment data that has the number of establishments at the state and county level with total net profit/loss and the associated 3-digit NAICS code (i.e., four variable data).
+
+What hierarchy do you think would be best for this dataset and why?
+
+:::
+
+## NIST PSCR Differential Privacy Synthetic Data Challenge
+
+![Screenshot from the 2018 NIST Differential Privacy Synthetic Data Challenge](www/images/2018-nist-dp-challenge.png){width="800"}
+
+### Motivation
+
+The National Institute of Standards and Technology Public Safety Communications Research Division (NIST PSCR) hosted two Differential Privacy Data Challenges to encourage new innovations in formally private synthetic data methodologies [@ridgeway2020crisis].
+
+1. [2018 Differential Privacy Synthetic Data Challenge](https://www.nist.gov/ctl/pscr/open-innovation-prize-challenges/past-prize-challenges/2018-differential-privacy-synthetic) used emergency response data and census public micro use data.
+
+2. [2020 Differential Privacy Temporal Map Challenge](https://www.nist.gov/ctl/pscr/open-innovation-prize-challenges/past-prize-challenges/2020-differential-privacy-temporal) used 911 incidences data, American Community Survey demographic data, and Chicago taxi ride data.
+
+We will focus on the 2018 challenge, because NIST and the contestants have released more publications that are associated with the challenge.
+
+### Data
+
+The data challenged had three matches [@bowen2021comparative]:
+
+- Matches \#1 and \#2 used the San Francisco Fire Department’s Call for Service data, with a different year for each match.
+  - The Service data contained a total of 32 categorical and continuous variables with roughly 236,000 to 314,000 observations, respectively. For example, *Call Type Group*, *Number of Alarms*, *City*, *Zip Code of Incident*, *Neighborhood*, *Emergency Call Received Date and Time*, *Emergency Call Response Date and Time*, *Supervisor District*, and *Station Area*.
+  - One of the main challenges was accounting for the structural zeros, e.g., not all emergency calls resulted in someone being dispatched to a location.
+
+**A subset of the 2017 San Francisco Fire Department’s Call for Service data**
+```{r, echo = FALSE, fig.height = 3.5}
+sffd <- read_csv(here::here("data", "2017-sffd.csv"), col_select = 1:5)
+
+sffd
+```
+
+- For Match #3, challenge participants trained their methods on the Colorado Public Use Microdata Sample (PUMS) data, and their methods were evaluated on the Arizona and Vermont PUMS data for final scoring.
+    - All three PUMS data had 98 categorical and continuous variables with the number of observations ranging from about 210,000 to 662,000. *Gender*, *Race*, *Age*, *City*, *City Population*, *School*, *Veteran Status*, *Rent*, and *Income Wage* were a few of the 98 variables.
+  
+**A subset of the Vermont PUMS data**
+```{r, echo = FALSE, fig.height = 3.5}
+vermont <- read_csv(here::here("data", "vermont.csv"), col_select = 1:10)
+
+vermont
+```
+
+- Competitors were given the utility metrics and training data to test and benchmark their methods.
+- Number of observations in the confidential data could be treated as known, but the released formally private data did not need to match the confidential data.
+- Data can be downloaded in the [Urban Institute Data Catelog](https://datacatalog.urban.org/dataset/2018-differential-privacy-synthetic-data-challenge-datasets).
+
+### Disclosure Risk
+
+- Contestants used both $\epsilon$-DP (i.e., pure-DP) and $(\epsilon, \delta)$-DP (i.e., approximate-DP) definitions, where NIST PSCR set $\epsilon=\{0.01, 0.1, 1\}$ and $\delta = 0.001$ for Matches #1 and #2 and $\epsilon=\{1, 3, 8\}$ and $\delta = 0.001$ for Match #3
+- The contestants used the Laplace Mechanism and the Gaussian Mechanism as the sanitizer.
+
+**Note:** Some contestants chose not to use $\delta$, because they used $\epsilon$-DP.
+
+### Utility Metrics
+
+NIST PSCR created a "clustering task", "classification task", and "regression task" [@bowen2021comparative]. 
+
+- The "clustering" analysis compared the 3-way marginal density distributions between the original and synthetic data sets, where the utility score was the absolute difference in the density distributions. NIST PSCR repeated this calculation 100 times on randomly selected variables, and then averaged for the final clustering score. 
+
+- The "classification" analysis at a high level tests similarity between the original and synthetic data in the randomly selected subsets of the joint distributions, so the term "classification" is slightly misleading.
+
+- The “regression” analysis used a two-part score system.
+  - The first score calculated the mean-square deviation of the Gini indices in the original and synthetic data for every city on the gender wage gap, and then averaged those values over the total number of cities in the original data.
+  - The second score compared how the cities in the original and the synthetic data sets were ranked on gender pay gap, calculating the rank differences by the mean-square deviation.
+  - NIST PSCR averaged these two scores for the overall regression analysis score.
+
+- For all three NIST PSCR scoring metrics, a larger value in the challenge indicated that the synthetic data preserved the original data well.
+
+### Statistical Disclosure Control Method
+
+We will look at two of the finalist submissions to compare their approaches that performed well overall in the contest.
+
+**DPFieldGroups** - nonparametric formally private method.
+
+1. Pre-Processing Step: cluster highly correlated variables based on public data (i.e., identify marginals that are highly correlated).
+2. Privacy Step: apply the Laplace Mechanism on the original data cell counts based on the marginals from the previous step.
+3. Post-Processing Step: reduce the noisy counts to zero if the counts fall below a threshold calculated from $\epsilon$ and the $\log_{10}$ number of bins in the particular marginal histogram.
+
+![A visual representation of DPFieldGroups](www/images/dp-field-groups.png){width="600"}
+
+
+**Maximum Spanning Tree (NIST-MST)** - a parametric formally private method [@mckenna2021winning].
+
+1. Pre-Processing Step: select the highly correlated variables in two ways; a) manually by domain expert knowledge or, b) automatically by an algorithm.
+2. Privacy Step: apply the Gaussian Mechanism and the 1-, 2-, and 3-way marginals on those identified correlated variables.
+3. Post-Processing Step: ensure consistency using the Private-Probabilistic Graphic Model (PGM) algorithm, that estimates a high-dimensional data distribution from the noisy measurements and then generates the synthetic data.
+
+![A viusal representation of the Maximum Spanning Tree](www/images/nist-mst.png){width="700"}
+
+### Limitations
+
+- NIST PSCR announced the metric criteria at the start of each match, so the competitors could modify their approach based on the scoring metrics. This is a known issue in most data challenges.
+
+- Assumed the data are counts and treated the training data as public.
+
+## Exercise 2
+
+::: {.panel-tabset}
+### <font color="#55b748">**Question 1**</font>
+Which method do you think performed the best for the NIST Data Challenge when applied to all three datasets?
+
+### <font color="#55b748">**Solution 1**</font>
+NIST-MST won the entire competition and went on to win the 2020 Differential Privacy Temporal Map Challenge.
+:::
+
+::: {.panel-tabset}
+### <font color="#55b748">**Question 2**</font>
+Does the result from the previous question surprise you? Why or why not?
+
+### <font color="#55b748">**Hint 2**</font>
+Think about the metrics NIST PSCR created for the challenge.
+:::
+
+::: {.panel-tabset}
+
+### <font color="#55b748">**Question 3**</font>
+Which method do you think performed the best for wider range of utility metrics?
+
+### <font color="#55b748">**Solution 3**</font>
+@bowen2021comparative used the formally private synthetic datasets from the 2018 competition and applied various other utiity metrics. They found that DPFieldGroups performed better overall compared to the other methods. The reasons are:
+
+- Parametric SDC method like NIST-MST add noise in a less direct fashion, drawing values from a high-dimensional distribution  that must first be approximated.
+- The nonparametric SDC method like DPFieldGroups add noise directly to the marginals.
+- Methods that post-process the data more introduce additional noise into the data if the specific utility metric is not kept in mind. DPFieldGroups had the least involved post-processed step out of all the top competitors but had the best overall privacy-utility trade-off.
+
+:::
+
+## Google's COVID-19 Mobility Reports
+
+![Screenshot of Google's COVID-19 Mobility Reports landing page](www/images/google-covid-mobility.png){width="800"}
+
+### Motivation
+
+Google created the [COVID-19 Community Mobility Reports](https://www.google.com/covid19/mobility/) to provide movement trends over time at different geographic regions for various categories, such as transit stations and workplaces [@aktay2020google].
+
+The figure below is a screenshot of the Google COVID-19 Community Mobility Report for Santa Fe County from December 4, 2020 to January 15, 2021. The plots show average movement increase or decrease for each category from the baseline.
+
+**Note:** Google calculated the baseline as the median value for the corresponding day of the week, during the 5-week period January 3 to February 6, 2020. This is fixed.
+
+![Screenshot of the Google's COVID-19 Mobility Reports for Santa Fe County in New Mexico](www/images/santa-fe-mobility.png){width="600"}
+
+### Data
+
+- Geospatial and temporal (i.e., space and time) data of all Google users who consented to their data being collected. Google researchers refer to the movement count as the "metric". We will refer to this as the "target statistic" to not be confused with other terms, such as "utility metric".
+
+### Disclosure Risk
+
+- Google researchers used $\epsilon$-DP (i.e., pure-DP) with $\epsilon = 0.11$ and $0.22$ per 1 hour*, depending on geographic granularity level.
+- They used the Laplace Mechanism as the sanitizer.
+
+### Utility Metrics
+
+- Google researchers computed the 97.5 percent confidence interval of the noisy target statistic (i.e., $[m_{min}, m_{max}]$) and confidence interval of the baseline (i.e., $[b_{min}, b_{max}]$) of the aggregated counts.
+- Next, they computed the ratios $m_{min}/b_{max}$ and $m_{max}/b_{min}$.
+-If either ratio had "...a 5 percent chance (or higher) of being wrong by more than $\pm 10$ absolute percentage points", then they removed the information.
+
+***Note:** For most location types, the Google researchers focused on the 12 active hours.
+
+### Statistical Disclosure Control Method
+
+- The Google researchers simplified the geospatial problem by releasing the information at larger geography levels (e.g., county) and with no other types of information (e.g., demographic information).
+
+- Figure below is a diagram of Google's approach [@aktay2020google].
+
+![System diagram of Google's COVID-19 Mobility Reports method](www/images/google-system-diagram.png){width="800"}
+
+1. Pre-Processing Step: Calculate each user's movement for the current week (i.e., target statistic) and the baseline week.
+2. Privacy Step: Add Laplace noise to the target statistic and baseline week values based on geographic granularity level (see the figure below for specific privacy parameter values).
+3. Post-Processing Step: Check whether the ratio of the median baseline against the noisy target statistic exceeds the "unreliable metric" criteria. If so, remove the value from the final report.
+
+Figure below shows the privacy or noise parameters used for the Google COVID-19 Mobility Reports at each geographic level. Granularity level 0 corresponds to country / region, level 1 corresponds to level geopolitical subdivsions (e.g., U.S. States), and level 2 corresponds to higher-resolution granularity (e.g., U.S. counties).
+
+**Note:** The Google researchers did not publish any target statistics for geographic regions smaller than 3km$^2$.
+
+### Limitations
+
+- No smaller geographic levels than county and suppressed data if the counts were too small (see figure below).
+- Converted the data to counts.
+- Much higher privacy-loss budget. i.e., $\epsilon = 1.32$ and $2.64$ per day or $\epsilon = 36.9$ and $79.2$ per month.
+
+The figure below is a screenshot of the Google COVID-19 Community Mobility Report for Los Alamos County from December 4, 2020 to January 15, 2021. The plots show average movement increase or decrease for each category from the baseline. The * indicates that “The data doesn’t meet quality and privacy thresholds for every day in the chart.”
+
+![Screenshot of the Google's COVID-19 Mobility Reports for Los Alamos County in New Mexico](www/images/los-alamos-mobility.png){width="600"}
+
+## Exercise 3
+
+::: {.panel-tabset}
+### <font color="#55b748">**Question 1**</font>
+Do you agree or disagree with the Google researchers' choice of utility metrics and privacy parameters?
+
+### <font color="#55b748">**Question 2**</font>
+What other utility metrics would you use to assess the quality of location and time data?
+:::
+
+## Bonus Exercises
+
+### Exercise 4
+::: {.panel-tabset}
+
+#### <font color="#55b748">**Question**</font>
+
+Which of these is a step (and not part of a step) in the overall statistical disclosure control framework?
+
+  - Pre-processing
+  - Adding noise
+  - Identifying invariants
+
+#### <font color="#55b748">**Solution**</font>
+
+Which of these is a step (and not part of a step) in the overall statistical disclosure control framework?
+
+  - **Pre-processing**
+  - Adding noise
+  - Identifying invariants
+  
+:::
+
+### Exercise 5
+::: {.panel-tabset}
+
+#### <font color="#55b748">**Question**</font>
+
+The U.S. Census Bureau used what privacy definition for the 2020 DAS?
+
+  - Pure differential privacy
+  - Approximate differential privacy
+  - Zero-concentrated differential privacy
+
+#### <font color="#55b748">**Solution**</font>
+
+The U.S. Census Bureau used what privacy definition for the 2020 DAS?
+
+  - Pure differential privacy
+  - Approximate differential privacy
+  - **Zero-concentrated differential privacy**
+
+:::
+
+### Exercise 6
+::: {.panel-tabset}
+
+#### <font color="#55b748">**Question**</font>
+
+For the NIST PSCR Differential Privacy Data Challenge, what was NOT an assumption when developing their formally private methods prior to scoring?
+
+  - Number of observations
+  - Information from the training dataset is public
+  - Utility metrics for scoring
+  
+#### <font color="#55b748">**Solution**</font>
+
+For the NIST PSCR Differential Privacy Data Challenge, what was NOT an assumption when developing their formally private methods prior to scoring?
+
+  - **Number of observations**
+  - Information from the training dataset is public
+  - Utility metrics for scoring
+
+:::

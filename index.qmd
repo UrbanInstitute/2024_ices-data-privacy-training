@@ -1,0 +1,8 @@
+# Preface {.unnumbered}
+
+This book contains materials for **Introduction to Data Privacy and Data Synthesis Techniques** at the [2024 International Conference on Establishment Statistics](https://ww2.amstat.org/meetings/ices/2024/) in Glasgow, Scotland. 
+
+
+## License
+
+This website is free to use and licensed under the GNU AGPLv3 license. The license is available in the [GitHub repository](). 

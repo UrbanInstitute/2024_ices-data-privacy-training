@@ -1,0 +1,418 @@
+---
+title: "Introduction to Differential Privacy and Formal Privacy"
+date: today
+format:
+  html:
+    fig-cap-location: top
+    number_sections: false
+    embed-resources: true
+    code-fold: true
+    toc: true
+    css: ../www/web_report.css
+editor_options:
+  chunk_output_type: console
+execute:
+  warning: false
+  message: false
+bibliography: references.bib
+---
+
+```{=html}
+<style>
+@import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+</style>
+```
+```{r setup}
+#| label: setup
+#| echo: false
+
+options(scipen = 999)
+
+library(tidyverse)
+library(gt)
+library(palmerpenguins)
+library(urbnthemes)
+library(here)
+
+set_urbn_defaults()
+
+```
+
+## Recap
+
+In the last session, we discussed general and specific utility metrics for evaluating synthetic data.
+
+-   General utility metrics include summary statistics, correlation fit, and discriminant based methods such as the pMSE ratio.
+
+-   Specific utility metrics include regression confidence interval overlap and microsimulation results.
+
+We also discussed disclosure risk evaluation, including metrics for identity disclosure, attribute disclosure, and other metrics such as membership inference tests and copy protection metrics.
+
+A common theme throughout this lesson was that many of these metrics require judgement calls on the part of the data stewards. For example,
+
+-   What should be considered a "good" pMSE ratio score for a synthetic dataset? Does this change in the context of the domain?
+
+-   How much disclosure risk is "too much"? Are there types of disclosure risk data users can tolerate more than others?
+
+-   When evaluating disclosure risk, are we making assumptions about how the attacker will approach the data or resources the attacker has access to? Do these assumptions hold in the context of the domain?
+
+**Motivation for today:** what if we could create a mathematical bound on the disclosure risk for any question asked of the confidential data?
+
+In this session, we will cover a high-level overview of formal privacy, differential privacy, and formally private mechanisms. This summary will involve some mathematical intuition and present some mathematical equations.
+
+## Formal Privacy
+
+After learning about evaluating disclosure risks, several questions have arisen:
+
+-   What level of disclosure risk should be considered acceptable, and what type?
+
+-   When assessing disclosure risk, what assumptions can be made about the methods or approach a potential data intruder may employ?
+
+-   How do we account for the resources that a data intruder could potentially access?
+
+-   Do these assumptions hold within the context of the specific real-world application?
+
+Addressing these questions is why applying statistical disclosure control (SDC) methods is difficult. When developing a SDC method, privacy researchers must predict how a data intruder might attack the data, considering what sensitive information they want and what resources they have now or in the *future*.
+
+**Formal privacy** did away with those assumptions. It provides a mathematical bound on the disclosure risk for any statistic applied to the confidential data. Although methods developed within the formal privacy framework are considered SDC methods, data privacy researchers often separate formal privacy from other SDC methods. We will refer to the SDC methods and disclosure risk measures not developed under formal privacy as **traditional SDC methods** and **traditional disclosure risk definitions**.
+
+### Definition of Formal Privacy
+
+Although the privacy community has not fully agreed on a common definition, the U.S. Census Bureau[^06_introduction_to_differential_privacy-1] defines **formal privacy** as a subset of SDC methods that give "formal and quantifiable guarantees on inference disclosure risk and known algorithmic mechanisms for releasing data that satisfy these guarantees."
+
+[^06_introduction_to_differential_privacy-1]: "Consistency of data products and formally private methods for the 2020 census," US Census Bureau, p. 43, https://irp.fas.org/agency/dod/jason/census-privacy.pdf
+
+In general, formally private methods have the following features [@bowen2021philosophy]:
+
+-   Ability to quantify and adjust the privacy-utility trade-off, typically through parameters.
+-   Ability to rigorously and mathematically prove the maximum privacy loss that can result from the release of information.
+-   Formal privacy definitions also allow one to *compose* multiple statistics. In other words, a data curator can compute the total privacy loss from multiple individual information releases.
+
+::: callout-note
+## Note on terminology
+
+In the formal privacy literature, privacy researchers often use the terms mechanism, algorithm, and method interchangeably to describe the process of releasing a private statistical output. Sometimes these researchers refer to a simple process, such as adding noise directly to a computed statistic. Other times they refer to more complicated processes, such as post-processing (explained later in this section). We do not see a clear delineation in the literature when using the three terms. More crucially is that anything referred to as a formally private method, formally private mechanism, or formally private algorithm must provably satisfy the relevant definition of formal privacy.
+:::
+
+### Data Products
+
+In most of the cases we've discussed so far, the released data product is a full dataset. However, a spectrum of data products could be released by a data curator after applying privacy methods. Here are a list examples of possible data products that a data curator could release after applying SDC methods, roughly from most to least detailed:
+
+-   microdata (e.g., public use microdata series or PUMS)
+-   summary tables (e.g., American Community Survey tables)
+-   summary statistics (e.g., multiple statistics on income in a state)
+-   single statistics (e.g., maximum age in a county)
+
+Curators could release one of these products after applying a data privacy method, or they could release them "on demand," to answer different questions using the data.
+
+-   Questions asked of the data are referred to in computer science terminology as **queries** which are **statistics**.
+
+-   The below image shows how the on-demand (or interactive) version of this process might work, with a user asking a question of the confidential data and receiving an answer that has been manipulated with algorithm $\mathcal{A}$.
+
+    -   Note that while in the example the statistic in question is a single number, any of the above data products are available as potential output.
+
+![](www/images/lesson-04-interactive.png)
+
+-   Curators must consider how much noise should be added and how many statistics should be made available.
+
+-   If too many questions are answered with enough accuracy, all the data could be compromised, so the type and number of questions asked of the data are limited by the curators [@bowen2021philosophy].
+
+The main difference between traditional SDC methods and formally private methods is the ability to account for all information being "leaked" from the confidential data. We can think of traditional SDC methods as someone charging a limitless credit card; formally private methods are when someone charges to a debit card with a set budget. In both scenarios, there is a running bill, but only one requires constantly checking the balance. We can easily imagine that not tracking that bill is the equivalent of releasing too many statistics with enough accuracy, which could compromise the confidential data [@bowen2021philosophy]. Although data stewards must limit the type and number of questions asked of the data in both traditional and formal privacy settings, they are faced with "tracking the bill" under a formal privacy framework.
+
+## Exercise 1
+
+::: panel-tabset
+## <font color="#55b748">**Question**</font>
+
+Imagine you are in charge of safeguarding a dataset against an intruder. Brainstorm and discuss **features of the intruder** that you would consider a "worst-case scenario" in terms of privacy (short of the intruder having access to the entire confidential dataset).
+
+## <font color="#55b748">**Hints**</font>
+
+-   How much computational power might they have?
+-   Might they have access to other information about the observations?
+-   Might they have access to other, supplemental datasets?
+:::
+
+## Differential Privacy
+
+**Differential privacy (DP)** is just one type of formal privacy.
+
+![](www/images/lesson-04-privacy-guarantee.png)
+
+-   DP is a strict mathematical definition that a method must satisfy (or meet the mathematical conditions) to be considered differentially private, not a statement or description of the data itself.
+
+-   Informally, DP does not make assumptions about how a data intruder will attack the data and the amount of external information or computing power an actor has access to, now or in the future.
+
+-   Curators control the strength of this privacy guarantee by adjusting the privacy loss budget.
+
+### Privacy Loss Budget
+
+Formal privacy uses the concept of a **privacy loss budget**, typically represented mathematically as $\epsilon$. The privacy loss budget bounds the disclosure risk associated with releasing data or statistics [@us2021disclosure].
+
+::: callout-note
+## Note on the privacy loss parameter
+
+There are many other privacy loss parameters, but we will use $\epsilon$ here as a general representation of the privacy loss budget for simplicity.
+:::
+
+The privacy loss budget can be thought of as a knob that adjusts the trade-off between data privacy and utility. Some things to keep in mind about the privacy loss budget are as follows:
+
+-   The data curator must decide the privacy loss budget (i.e., the total amount of $\epsilon$) before the release of any data or statistic. Like a real budget, when privacy loss budget is exhausted, no more information from the confidential data is released.
+
+-   A larger value of $\epsilon$ increases the maximum disclosure risk (i.e., the upper bound of the disclosure risk) associated with a given release of information. Simply put,
+
+    -   larger $\epsilon$ = less noise potentially added to a statistic = more accuracy, but less privacy, and
+
+    -   smaller $\epsilon$ = more noise potentially added to a statistic = less accuracy, but more privacy.
+
+![](www/images/dp-flowers.png)
+
+-   Extreme cases (note that these cases are not realistic in the sense of real-world applications, but are presented to demonstrate the intuition):
+
+    -   $\epsilon \to \infty$
+        -   all privacy will be lost; data retains all utility, but no privacy
+        -   $\epsilon = \infty$ would indicate that no noise is added and the confidential data is released
+    -   $\epsilon \to 0$
+        -   no privacy is lost; data is completely distorted and no utility remains
+        -   $\epsilon = 0$ would indicate that no data is released
+
+::: callout-note
+## A key takeaway
+
+Disclosure risk can be adjusted by adjusting the privacy loss budget, but not eliminated. Adjusting the privacy loss budget is really about adjusting the strength of the privacy guarantee made by formal privacy.
+:::
+
+### Who sets the privacy loss budget?
+
+-   This is very much still an open question, with implications for data stewards, researchers, data users, and policymakers.
+
+-   Although policymakers are the most equipped to understand consequences of privacy loss, they are likely the least equipped to understand what $\epsilon$ means.
+
+## Two Models of Differential Privacy
+
+### Trusted Curator Model
+
+In the **trusted curator model**, a centralized data curator that receives confidential data, creates the data products, applies the formally private method, and releases the results.
+
+-   If a privacy loss budget is in place, the curator must stop releasing information when the budget is reached.If the data curator does not, then this leads to the $\epsilon \to \infty$ scenario, where a data intruder could make precise statistical inferences about the confidential data.
+
+-   **Example:** Uber created a differentially private system that allowed analysts within the company to evaluate customer experience through targeted requests without seeing confidential individual trip or rider details [@bowen2021philosophy].
+
+![](www/images/lesson-04-trustedcurator.png)
+
+### Local Differential Privacy
+
+In the **local differential privacy model** (LDP), data participants or data collection points receive their own privacy loss budget instead of using a global budget that is applied to the entire confidential data. In other words, the participants add formally private noise locally to their own data before sending their information to the data curator.
+
+-   LDP "trusts no one", not even the curator!
+
+-   Each individual user or data collection point receives a privacy budget $\epsilon$, rather than $\epsilon$ being applied to the entire confidential data [@bowen2021philosophy].
+
+-   Substantially more noise is added to locally noised microdata than on data products created by a trusted curator [@bowen2021philosophy].
+
+-   Example: In 2014, Google began using a local differentially private model with Chrome web browsers to collect sensitive statistics from users; noise would be added to local browser microdata, and the resulting noised data was collected for analysis. However, the data was deemed too noisy for accurate analysis, and Google now uses a hybrid model where data is aggregated from local machines, noise is added to the aggregations, and then the noised aggregations are collected for analysis [@bowen2021philosophy].
+
+![](www/images/lesson-04-dp-local.png)
+
+LDP comes from randomized response. Randomized response was developed in the 1960s to improve response accuracy for sensitive questions. RR is sometimes called the "Warner Model" [@warner1965].
+
+::: callout-tip
+## Randomized response
+
+**Binary randomized response (BRR)** is a technique that introduces randomness into responses to sensitive survey questions with two possible responses, which allows for valid analysis while protecting individual responses.
+
+The randomized response procedure with a coin is:
+
+1.  Ask a yes/no question (e.g., Did you take drugs this month?).
+2.  The respondent flips a coin with $P(heads) = p$ and $P(tails) = 1 - p = q$.[^06_introduction_to_differential_privacy-2]
+3.  The respondent answers truthfully if "heads" and lies if "tails".
+
+Statisticians can condition on the coin toss and calculate an unbiased estimate of the parameter of interest.
+:::
+
+[^06_introduction_to_differential_privacy-2]: The coin doesn't need to be fair. In fact, the fairness of the coin is a parameter we can use to tune the utility-disclosure risk tradeoff.
+
+Suppose we are interested in the number of people who smoke in a population.
+
+Let $n$ be the number of respondents to the question. Let $n_v$ be the true number of smokers. Let $p$ be the probability of responding truthfully and $q$ be the probability of responding untruthfully. Finally, let $\tilde{n}$ be the number of people who report smoking.
+
+$\tilde{n}$ is a biased estimator of $n_v$. We need to correct for people who smoke who report as non-smokers and non-smokers who report as smokers.
+
+::: callout-note
+$$E\left[\tilde{n}\right] = n_v - n_v \cdot q + (n - n_v) \cdot q$$
+
+$$E\left[\tilde{n}\right] = n_v \cdot p + (n - n_v) \cdot q$$
+
+$$E\left[\tilde{n}\right] = n_v \cdot p + n \cdot q - n_v \cdot q$$
+
+$$E\left[\tilde{n}\right] - n \cdot q= n_v  (p - q)$$
+
+$$\frac{E\left[\tilde{n}\right] - n \cdot q}{  (p - q)}= n_v$$
+:::
+
+Accordingly, the unbiased estimator of $n_v$ is $\frac{\tilde{n} - n \cdot q}{p - q}$.
+
+Let $n = 100,000$, $p = 0.6$, and $q = 0.4$. Suppose $\tilde{n} = 44,166$.
+
+Then $\hat{n_v} = \frac{44,166 - 100,000 \cdot 0.4}{0.6 - 0.4} = 20,830$.
+
+To confirm our result, let's simulate some data where 20% of respondents smoke:
+
+```{r}
+#| code-fold: false
+
+set.seed(1)
+
+p <- 0.6
+q <- 1 - p
+n <- 100000
+
+true_responses <- sample(
+  c("smoker", "non-smoker"),
+  size = n, 
+  replace = TRUE, 
+  prob = c(0.2, 0.8)
+)
+
+coins <- sample(
+  c("truth", "lie"),
+  size = n, 
+  replace = TRUE, 
+  prob = c(p, q)
+)
+
+noisy_responses <- 
+  case_when(
+    coins == "lie" & true_responses == "non-smoker" ~ "smoker",
+    coins == "lie" & true_responses == "smoker" ~ "non-smoker",
+    TRUE ~ true_responses
+  )
+    
+  
+(sum(noisy_responses == "smoker") - q * n) / (p - q)
+
+```
+
+```{r}
+#| echo: false
+
+brr <- function(n, p) {
+  
+  q <- 1 - p
+  
+  true_responses <- sample(
+    c("smoker", "non-smoker"),
+    size = n, 
+    replace = TRUE, 
+    prob = c(0.2, 0.8)
+  )
+  
+  coins <- sample(
+    c("truth", "lie"),
+    size = n, 
+    replace = TRUE, 
+    prob = c(p, q)
+  )
+  
+  noisy_responses <- 
+    case_when(
+      coins == "lie" & true_responses == "non-smoker" ~ "smoker",
+      coins == "lie" & true_responses == "smoker" ~ "non-smoker",
+      TRUE ~ true_responses
+    )
+  
+  ((sum(noisy_responses == "smoker") - q * n) / (p - q)) / n
+  
+}
+
+tibble(
+  n = seq(100, 50000, 100),
+  p_smoker_hat = map_dbl(.x = n, .f = ~ brr(n = .x, p = 0.6))
+) |>
+  ggplot(aes(n, p_smoker_hat)) +
+  geom_line() +
+  geom_hline(yintercept = 0.2, color = "red") +
+  labs(
+    title = "The Accuracy of LDP is Very Sensitive to Sample Size",
+    subtitle = "Truth = 0.2 and p = 0.5"
+  )
+  
+expand_grid(
+  p = seq(0.5, 1, 0.01),
+  iteration = 1:100
+) |>
+  mutate(
+    p_smoker_hat = map_dbl(.x = p, .f = ~ brr(n = 10000, p = .x))
+  ) |>
+  ggplot(aes(p, p_smoker_hat)) +
+  geom_point(alpha = 0.3) +
+  geom_hline(yintercept = 0.2, color = "red") +
+  scale_y_continuous(limits = c(0, 0.5)) +
+  labs(
+    title = "The Accuracy of LDP is Very Sensitive to p",
+    subtitle = "Truth = 0.2, n = 10,000, and 100 iterations per p"
+  )
+
+```
+
+::: callout-tip
+## $\epsilon$-LDP protocol
+
+Consider two probabilities $p > q$. A mechanism, $\mathcal{M}$, such that a user reports the true value with $p$ and each of the other values with $q$, satisifies $\epsilon$-LDP if and only if $p \leq q\cdot\exp(\epsilon)$ or $\log(\frac{p}{q}) \leq \epsilon$.
+:::
+
+Let $v$ be the smoking status of the individual and $v^*$ be the noisy output of some mechanism $\mathcal{M}$. Then the mechanism is formally expressed as
+
+$$
+P\left[\mathcal{M}(v) = v^*\right] = 
+\begin{cases}
+p = \frac{\exp(\epsilon)}{\exp(\epsilon) + 1} \text{ if } v^* = v,\\
+q = \frac{1}{\exp(\epsilon) + 1} \text{ if } v^* \neq v
+\end{cases}
+$$
+
+Generalized randomized response (GRR) generalizes BRR to questions with multiple discrete responses. BRR and GRR are sometimes called direct encoding. Uniary encoding and binary local hash are competing methods that are minor extensions of direct encoding.
+
+::: {.callout-caution}
+LDP is not efficient. The confidentiality gains of the local model come at the cost of requiring many observations and the methods do not scale well to applications with high cardinality.
+:::
+
+@wang2020 offers a thorough introduction to LDP.
+
+## Exercise 2
+
+::: panel-tabset
+## <font color="#55b748">**Question**</font>
+
+Assume that your firm applies a formally private algorithm in the following way. Individual satellites collect location data and independently add formally private noise. The altered data is then sent to a centralized server for analysis. Which model of DP is being used?
+
+-   Trusted Curator
+-   Local Differential Privacy
+-   Hybrid
+
+## <font color="#55b748">**Solution**</font>
+
+Assume that your firm applies a formally private algorithm in the following way. Individual satellites collect location data and independently add formally private noise. The altered data is then sent to a centralized server for analysis. Which model of DP is being used?
+
+-   Trusted Curator
+-   **Local Differential Privacy**
+-   Hybrid
+:::
+
+## Exercise 3
+
+::: panel-tabset
+## <font color="#55b748">**Question**</font>
+
+Assume that in the previous example, executives at your company decide to increase the epsilon (privacy loss budget) used in the differentially private mechanism. You can expect the newly released data to be:
+
+-   More noisy than before
+-   Less noisy than before
+
+## <font color="#55b748">**Solution**</font>
+
+Assume that in the previous example, executives at your company decide to increase the epsilon (privacy loss budget) used in the differentially private mechanism. You can expect the newly released data to be:
+
+-   More noisy than before
+-   **Less noisy than before**
+:::

@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2024-06-12">
+
+<title>Introduction to Data Privacy and Data Synthesis Techniques - 1&nbsp; Introduction to Data Privacy</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./b_data-privacy-and-synthetic-data.html" rel="next">
+<link href="./a_intro.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="www/styles.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./a_intro.html">Introduction and Setup</a></li><li class="breadcrumb-item"><a href="./01_introduction_to_data_privacy.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Data Privacy</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introduction to Data Privacy and Data Synthesis Techniques</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./a_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction and Setup</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_introduction_to_data_privacy.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Data Privacy</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./b_data-privacy-and-synthetic-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Privacy and Synthesis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_synthetic-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Synthetic Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_disclosure_utility_metrics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Utility and Disclosure Risk Metrics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_synthesis-demo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data Synthesis Demo</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_synthetic-data-case-studies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Synthetic Data Case Studies</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./c_differential-privacy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Differential Privacy</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_introduction_to_differential_privacy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Introduction to Differential Privacy and Formal Privacy</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_differential_privacy_details.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Formally Private Definitions, Fundamental Mechanisms, and Algorithms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08_differential_privacy_case_studies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Formally Private Case Studies</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./d_where-to-go.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Where to Go From Here</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#why-is-data-privacy-important" id="toc-why-is-data-privacy-important" class="nav-link active" data-scroll-target="#why-is-data-privacy-important"><span class="header-section-number">1.1</span> Why is Data Privacy important?</a></li>
+  <li><a href="#what-is-data-privacy" id="toc-what-is-data-privacy" class="nav-link" data-scroll-target="#what-is-data-privacy"><span class="header-section-number">1.2</span> What is Data Privacy?</a></li>
+  <li><a href="#data-privacy-workflow" id="toc-data-privacy-workflow" class="nav-link" data-scroll-target="#data-privacy-workflow"><span class="header-section-number">1.3</span> Data Privacy Workflow</a></li>
+  <li><a href="#overview-of-sdc" id="toc-overview-of-sdc" class="nav-link" data-scroll-target="#overview-of-sdc"><span class="header-section-number">1.4</span> Overview of SDC</a></li>
+  <li><a href="#formal-privacy" id="toc-formal-privacy" class="nav-link" data-scroll-target="#formal-privacy"><span class="header-section-number">1.5</span> Formal Privacy</a></li>
+  <li><a href="#measuring-utility-metrics-and-disclosure-risks" id="toc-measuring-utility-metrics-and-disclosure-risks" class="nav-link" data-scroll-target="#measuring-utility-metrics-and-disclosure-risks"><span class="header-section-number">1.6</span> Measuring Utility Metrics and Disclosure Risks</a>
+  <ul class="collapse">
+  <li><a href="#disclosure-risks" id="toc-disclosure-risks" class="nav-link" data-scroll-target="#disclosure-risks"><span class="header-section-number">1.6.1</span> Disclosure Risks</a></li>
+  <li><a href="#utility-measures" id="toc-utility-measures" class="nav-link" data-scroll-target="#utility-measures"><span class="header-section-number">1.6.2</span> Utility Measures</a></li>
+  </ul></li>
+  <li><a href="#exercise-1" id="toc-exercise-1" class="nav-link" data-scroll-target="#exercise-1"><span class="header-section-number">1.7</span> Exercise 1</a></li>
+  <li><a href="#exercise-2" id="toc-exercise-2" class="nav-link" data-scroll-target="#exercise-2"><span class="header-section-number">1.8</span> Exercise 2</a></li>
+  <li><a href="#exercise-3" id="toc-exercise-3" class="nav-link" data-scroll-target="#exercise-3"><span class="header-section-number">1.9</span> Exercise 3</a></li>
+  <li><a href="#suggested-reading---general-data-privacy" id="toc-suggested-reading---general-data-privacy" class="nav-link" data-scroll-target="#suggested-reading---general-data-privacy"><span class="header-section-number">1.10</span> Suggested Reading - General Data Privacy</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Data Privacy</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 12, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<style>
+@import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+</style>
+<section id="why-is-data-privacy-important" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="why-is-data-privacy-important"><span class="header-section-number">1.1</span> Why is Data Privacy important?</h2>
+<ul>
+<li>Modern computing and technology have made it easy to collect and process large amounts of data.</li>
+<li>Malicious actors can use computing power and advanced techniques to reidentify individuals by linking supposedly anonymized records with public databases.</li>
+<li>This kind of attack is called a “record linkage” attack. The following are some examples of famous record linkage attacks.
+<ul>
+<li>In 1997, MA Gov.&nbsp;Bill Weld announced the public release of insurance data for researchers. He assured the public that PII had been deleted. A few days later, Dr.&nbsp;Latanya Sweeney, then a MIT graduate student, mailed to Weld’s office his personal medical information. She purchased voter data and linked Weld’s birth date, gender, and zip code to his health records. And this was back in 1997, when computing power was minuscule, and social media didn’t exist!</li>
+<li>A study by Dr.&nbsp;Latanya Sweeney based on the 1990 Census <span class="citation" data-cites="sweeney2000simple">(<a href="references.html#ref-sweeney2000simple" role="doc-biblioref">Sweeney 2000</a>)</span> found that the 87% of the US population had reported characteristics that likely made them unique based only on ZIP, gender, and date of birth.</li>
+</ul></li>
+<li>Malicious actors can also reconstruct databases or by reconstructing databases from statistics.</li>
+<li>Releasing granular data can be of immense value to researchers. For example, cell phone data are invaluable for emergency responses to natural disasters, and granular medical data will lead to better treatment and development of cures.</li>
+</ul>
+<p><img src="www/images/racial_data_covid.png" class="img-fluid" width="600"></p>
+<ul>
+<li>More granular data are also important for understanding equity, particularly for smaller populations and subgroups.</li>
+</ul>
+</section>
+<section id="what-is-data-privacy" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="what-is-data-privacy"><span class="header-section-number">1.2</span> What is Data Privacy?</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Data Privacy
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Data Privacy</strong> is the ability “to determine what information about ourselves we will share with others.” <span class="citation" data-cites="fellegi1972question">(<a href="references.html#ref-fellegi1972question" role="doc-biblioref">Fellegi 1972</a>)</span>.</p>
+</div>
+</div>
+<ul>
+<li><p>There are at least three major threats to data privacy.</p>
+<ol type="1">
+<li><strong>Hackers:</strong> adversaries who steal confidential information through unauthorized access.</li>
+<li><strong>Snoopers:</strong> adversaries who reconstruct confidential information from data releases.</li>
+<li><strong>Hoarders:</strong> stewards who collect data but don’t release the data even if respondents want the information released.</li>
+</ol></li>
+<li><p>There are differing notions of what should and shouldn’t be private, which may include being able to opt out of or opt into disclosure protections.</p></li>
+<li><p>Data privacy is a broad topic, which includes data security, encryption, access to data, etc. We will not be covering privacy breaches from unauthorized access to a database (e.g., hackers).</p></li>
+<li><p>We are instead focused on privacy preserving access to data.</p></li>
+<li><p>Although data privacy and data confidentiality are certainly related, they are different, and both play a role in limiting statistical disclosure risk.</p></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Confidentiality
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Confidentiality</strong> is “the agreement, explicit or implicit, between data subject and data collector regarding the extent to which access by others to personal information is allowed” <span class="citation" data-cites="fienberg2018statistical">(<a href="references.html#ref-fienberg2018statistical" role="doc-biblioref">Fienberg and Jin 2018</a>)</span>.</p>
+</div>
+</div>
+<ul>
+<li><p>There is often a tension between privacy and data utility (or usefulness). This tension is referred to in the data privacy literature as the “privacy-utility trade-off.”</p>
+<ul>
+<li>For example, some universities require students to install an app that tracks their movements on campus. This allows professors teaching large classes with 100+ students to know their students’ punctuality, tardiness, or class absences. This tracking can be invasive, especially for students who rarely leave campus except during holidays, because the university could track their movements outside of class. However, the tracking app could alert students about an active shooter on campus, identify safe buildings to seek refuge, and notify emergency contacts regarding the students’ safety.</li>
+</ul></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Data utility, quality, accuracy, or usefulness
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Data utility, quality, accuracy, or usefulness</strong> is how practically useful or accurate to the data are for research and analysis purposes.</p>
+</div>
+</div>
+<ul>
+<li><p><em>Generally</em>, higher utility = more privacy risks and vice versa.</p></li>
+<li><p>In the data privacy ecosystem there are the following stakeholders:</p></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Data users and practitioners
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Data users and practitioners</strong> are individuals who consume the data, such as analysts, researchers, planners, and decision-makers.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Data privacy experts or researchers
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Data privacy experts or researchers</strong> are individuals who specialize in developing data privacy and confidentiality methods.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Data curators, maintainers, or stewards
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Data curators, maintainers, or stewards</strong> are individuals who posess the data and are responsible for its safekeeping.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Data intruders, attackers, or adversaries
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Data intruders, attackers, or adversaries</strong> are individuals who try to gather sensitive information from the confidential data.</p>
+</div>
+</div>
+<ul>
+<li>In addition, there are many versions of the data we should define:</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Original dataset:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Original dataset</strong> is the uncleaned, unprotected version of the data.</p>
+<p>For example, raw Decennial census microdata, which are never publicly released.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Confidential or gold standard dataset
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Confidential or gold standard dataset</strong> is the cleaned version (meaning edited for inaccuracies or inconsistencies) of the data; often referred to as the gold standard or actual data for analysis.</p>
+<p>For example, the Census Edited File that is the final confidential data for the 2020 Census. This dataset is never publicly released but may be made available to others who are sworn to protect confidentiality and who are provided access in a secure environment, such as a Federal Statistical Research Data Center.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Public dataset
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Public dataset</strong> is the publicly released version of the confidential data.</p>
+<p>For example, the US Census Bureau’s public tables and datasets.</p>
+</div>
+</div>
+</section>
+<section id="data-privacy-workflow" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="data-privacy-workflow"><span class="header-section-number">1.3</span> Data Privacy Workflow</h2>
+<ul>
+<li><p>Data users have traditionally gained access to data via:</p>
+<ol type="a">
+<li><p>direct access to the confidential data if they are trusted users (e.g., obtaining Special Sworn Status to use the Federal Statistical Research Data Centers).</p></li>
+<li><p>Access to public data or statistics, such as public microdata and summary tables, that the data curators and privacy experts produced with modification to protect confidentiality.</p></li>
+</ol></li>
+<li><p>The latter is how most data users gain access to information from confidential data and what we will focus on for this course. To create public data or statistics, data curators rely on statistical disclosure control (SDC) or limitation (SDL) methods to preserve data confidentiality. The process of releasing this information publicly often involves the steps shown in <a href="#fig-process">Figure&nbsp;<span>1.1</span></a>.</p></li>
+</ul>
+<div id="fig-process" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="www/images/data_privacy_workflow.png" class="img-fluid figure-img" width="518"></p>
+<figcaption class="figure-caption">Figure&nbsp;1.1: Process for releasing information</figcaption>
+</figure>
+</div>
+<ul>
+<li>There is potential for additional disclosure risks if Step 4 and Step 5 are repeated too many times. We can think of this like data leakage in a machine learning/predictive modeling framework.</li>
+</ul>
+</section>
+<section id="overview-of-sdc" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="overview-of-sdc"><span class="header-section-number">1.4</span> Overview of SDC</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Statistical Disclosure Control (SDC)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Statistical Disclosure Control (SDC)</strong> or Statistical Disclosure Limitation (SDL) is a field of study that aims to develop methods for releasing high-quality data products while preserving data confidentiality as a means of maintaining privacy.</p>
+</div>
+</div>
+<ul>
+<li><p>SDC methods have existed within statistics and the social sciences since the mid-twentieth century.</p></li>
+<li><p>Below is an opinionated, and incomplete, overview of various SDC methods. For this set of training sessions, we will focus in-depth on the methods in yellow.</p></li>
+</ul>
+<p><img src="www/images/mermaid.png" class="img-fluid"></p>
+<ul>
+<li><p>Here are a few traditional methods from the SDC literature. See <span class="citation" data-cites="matthews2011data">Matthews and Harel (<a href="references.html#ref-matthews2011data" role="doc-biblioref">2011</a>)</span> for more information.</p>
+<ul>
+<li><p><strong>Suppression:</strong> Not releasing data about certain subgroups or witholding information about certaint observations.</p></li>
+<li><p><strong>Swapping:</strong> The exchange of sensitive values among sample units with similar characteristics.</p></li>
+<li><p><strong>Generalization:</strong> Aggregating variables into larger units (e.g., reporting state rather than zip code) or top/bottom coding (limiting values below/above a threshold to the threshold value).</p></li>
+<li><p><strong>Noise Infusion:</strong> Adding random noise, often to continuous variables which can maintain univariate distributions.</p></li>
+<li><p><strong>Sampling:</strong> Only releasing a sample of individual records.</p></li>
+</ul></li>
+<li><p>The problem with the above approaches is that it really limits the utility of the data.</p>
+<ul>
+<li><p>Mitra and Reiter (2006) found that a 5 percent swapping of 2 identifying variables in the 1987 Survey of Youth in Custody invalidated statistical hypothesis tests in regression.</p></li>
+<li><p>Top/bottom coding eliminates information at the tails of the distributions, degrading analyses that depend on the entire distribution (Fuller 1993; Reiter, Wang, and Zhang, 2014).</p></li>
+</ul></li>
+<li><p>Synthetic data can help overcome some of these issues.</p></li>
+</ul>
+</section>
+<section id="formal-privacy" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="formal-privacy"><span class="header-section-number">1.5</span> Formal Privacy</h2>
+<ul>
+<li><p>Formal privacy centers around a formal mathematical definition of privacy that measures how much privacy leakage occurs.</p></li>
+<li><p>A formally private method provides mathematically provable protection to respondents and allows policy makers to manage the trade-off between data accuracy and privacy protection through tunable parameters for multiple statistics.</p></li>
+<li><p>Any SDC method/algorithm can be formally private if it meets the specific mathematical definition.</p></li>
+<li><p>Formal privacy is a definition/threshold for methods to meet, not a method in and of itself.</p></li>
+<li><p>Below in green are the SDC methods which have formally private versions.</p></li>
+</ul>
+<p><img src="www/images/mermaid2.png" class="img-fluid"></p>
+<ul>
+<li><p>In this course, we will cover 2 kinds of formal privacy definitions.</p>
+<ol type="a">
+<li><p><strong>Differential Privacy</strong> (DP): A mathematical definition of what it means to have privacy. The definition has a parameter called epsilon that control how much privacy loss occurs.</p></li>
+<li><p><strong>Approximate Differential Privacy</strong>: Similar to DP in the same framework, but it relaxes the definition.</p></li>
+</ol></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Threat model
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A <strong>threat model</strong> is a set of assumptions for how data intruders will attack the data, including computing power, access to external data sources, etc.</p>
+</div>
+</div>
+<ul>
+<li><p>A key difference between traditional SDC methods and formally private SDC methods is the threat models behind each approach.</p></li>
+<li><p>Formal privacy definitions assume the worst possible scenario, where an attacker has all the information but 1 record, has every possible version of the dataset (accounts for all future datasets), and unlimited computing power.</p></li>
+<li><p>Formally private methods don’t label particular variables as confidential/sensitive, but instead treats them all as sensitive due to the possibility of reidentifcation.</p></li>
+</ul>
+</section>
+<section id="measuring-utility-metrics-and-disclosure-risks" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="measuring-utility-metrics-and-disclosure-risks"><span class="header-section-number">1.6</span> Measuring Utility Metrics and Disclosure Risks</h2>
+<section id="disclosure-risks" class="level3" data-number="1.6.1">
+<h3 data-number="1.6.1" class="anchored" data-anchor-id="disclosure-risks"><span class="header-section-number">1.6.1</span> Disclosure Risks</h3>
+<ul>
+<li>Generally there are 3 kinds of disclosure risk:</li>
+</ul>
+<ol type="1">
+<li><strong>Identity disclosure risk:</strong> occurs if the data intruder associates a known individual with a public data record (e.g., a record linkage attack or when a data adversary combines one or more external data sources to identify individuals in the public data).</li>
+</ol>
+<p><img src="www/images/identity_disclosure_risk.png" class="img-fluid" width="344"></p>
+<ol start="2" type="1">
+<li><p><strong>Attribute disclosure risk:</strong> occurs if the data intruder determines new characteristics (or attributes) of an individual based on the information available through public data or statistics (e.g., if a dataset shows that all people age 50 or older in a city are on Medicaid, then the data adversary knows that any person in that city above age 50 is on Medicaid). This information is learned without identifying a specific individual in the data!</p></li>
+<li><p><strong>Inferential disclosure risk:</strong> occurs if the data intruder predicts the value of some characteristic from an individual more accurately with the public data or statistic than would otherwise have been possible (e.g., if a public homeownership dataset reports a high correlation between the purchase price of a home and family income, a data adversary could infer another person’s income based on purchase price listed on Redfin or Zillow).</p></li>
+</ol>
+<ul>
+<li>Important note: acceptable disclosure risks are usually determined by law.</li>
+</ul>
+</section>
+<section id="utility-measures" class="level3" data-number="1.6.2">
+<h3 data-number="1.6.2" class="anchored" data-anchor-id="utility-measures"><span class="header-section-number">1.6.2</span> Utility Measures</h3>
+<ul>
+<li>Generally there are 2 ways to measure utility of the data:</li>
+</ul>
+<ol type="1">
+<li><p><strong>General Utility</strong> (aka global utilty): measures the univariate and multivariate distributional similarity between the confidential data and the public data (e.g., sample means, sample variances, and the variance-covariance matrix).</p></li>
+<li><p><strong>Specific Utility</strong> (aka outcome specific utility): measures the similarity of results for a specific analysis (or analyses) of the confidential and public data (e.g., comparing the coefficients in regression models).</p></li>
+</ol>
+<ul>
+<li>Higher utility = higher accuracy and usefulness of the data, so this is a key part of selecting an appropriate SDC method.</li>
+</ul>
+</section>
+</section>
+<section id="exercise-1" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="exercise-1"><span class="header-section-number">1.7</span> Exercise 1</h2>
+<p>Let’s say a researcher generates a synthetic version of a dataset on penguins species. The first 5 rows of the gold standard dataset looks like this:</p>
+<div class="cell">
+<div class="cell-output-display">
+
+<div id="urban_table" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#urban_table table {
+  font-family: Lato, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#urban_table thead, #urban_table tbody, #urban_table tfoot, #urban_table tr, #urban_table td, #urban_table th {
+  border-style: none;
+}
+
+#urban_table p {
+  margin: 0;
+  padding: 0;
+}
+
+#urban_table .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: 0;
+  margin-right: auto;
+  color: #333333;
+  font-size: 13px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: hidden;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: transparent;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#urban_table .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#urban_table .gt_title {
+  color: #333333;
+  font-size: 13px;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#urban_table .gt_subtitle {
+  color: #333333;
+  font-size: 13px;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#urban_table .gt_heading {
+  background-color: #FFFFFF;
+  text-align: left;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#urban_table .gt_bottom_border {
+  border-bottom-style: hidden;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#urban_table .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #000000;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#urban_table .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 13px;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#urban_table .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 13px;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#urban_table .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#urban_table .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#urban_table .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #000000;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#urban_table .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#urban_table .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 13px;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: transparent;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: hidden;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#urban_table .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 13px;
+  font-weight: initial;
+  border-top-style: transparent;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: hidden;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#urban_table .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#urban_table .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#urban_table .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#urban_table .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: dashed;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#urban_table .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#urban_table .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#urban_table .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#urban_table .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#urban_table .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#urban_table .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#urban_table .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#urban_table .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#urban_table .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#urban_table .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#urban_table .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#urban_table .gt_table_body {
+  border-top-style: transparent;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: transparent;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#urban_table .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#urban_table .gt_footnote {
+  margin: 0px;
+  font-size: 13px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#urban_table .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#urban_table .gt_sourcenote {
+  font-size: 13px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#urban_table .gt_left {
+  text-align: left;
+}
+
+#urban_table .gt_center {
+  text-align: center;
+}
+
+#urban_table .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#urban_table .gt_font_normal {
+  font-weight: normal;
+}
+
+#urban_table .gt_font_bold {
+  font-weight: bold;
+}
+
+#urban_table .gt_font_italic {
+  font-style: italic;
+}
+
+#urban_table .gt_super {
+  font-size: 65%;
+}
+
+#urban_table .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#urban_table .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#urban_table .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#urban_table .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#urban_table .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#urban_table .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#urban_table .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#urban_table .gt_row {
+  padding: 5px 5px 5px 5px;
+}
+
+#urban_table .gt_sourcenote {
+  padding: 16px 0px 0px 0px;
+}
+
+#urban_table .gt_footnote {
+  padding: 16px 0px 0px 0px;
+}
+
+#urban_table .gt_subtitle {
+  padding: 0px 0px 2px 0px;
+}
+
+#urban_table .gt_col_heading {
+  padding: 10px 5px 10px 5px;
+}
+
+#urban_table .gt_col_headings {
+  padding: 0px 0px 0px 0px;
+  border-top-width: 0px;
+}
+
+#urban_table .gt_group_heading {
+  padding: 15px 0px 0px 0px;
+}
+
+#urban_table .gt_stub {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #d2d2d2;
+  border-top-color: black;
+  text-align: left;
+}
+
+#urban_table .gt_grand_summary_row {
+  border-bottom-width: 1px;
+  border-top-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #d2d2d2;
+  border-top-color: #d2d2d2;
+}
+
+#urban_table .gt_summary_row {
+  border-bottom-width: 1px;
+  border-top-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #d2d2d2;
+}
+
+#urban_table .gt_column_spanner {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="3" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="color: #696969; text-align: left; font-weight: normal; text-transform: uppercase;"></td>
+    </tr>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="color: #000000; font-size: 13px; font-weight: bold;" scope="col" id="species">species</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #000000; font-size: 13px; font-weight: bold;" scope="col" id="bill_length_mm">bill_length_mm</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="color: #000000; font-size: 13px; font-weight: bold;" scope="col" id="sex">sex</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="species" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">Chinstrap</td>
+<td headers="bill_length_mm" class="gt_row gt_right" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">51.3</td>
+<td headers="sex" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">male</td></tr>
+    <tr><td headers="species" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">Gentoo</td>
+<td headers="bill_length_mm" class="gt_row gt_right" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">44.0</td>
+<td headers="sex" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">female</td></tr>
+    <tr><td headers="species" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">Chinstrap</td>
+<td headers="bill_length_mm" class="gt_row gt_right" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">51.4</td>
+<td headers="sex" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">male</td></tr>
+    <tr><td headers="species" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">Chinstrap</td>
+<td headers="bill_length_mm" class="gt_row gt_right" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">45.4</td>
+<td headers="sex" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">female</td></tr>
+    <tr><td headers="species" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">Adelie</td>
+<td headers="bill_length_mm" class="gt_row gt_right" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">36.2</td>
+<td headers="sex" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">female</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>One of the metrics to assess data utility was the overall counts of penguin species across the synthetic and gold standard data, which look like this:</p>
+<div class="cell">
+<div class="cell-output-display">
+
+<div id="urban_table" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#urban_table table {
+  font-family: Lato, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#urban_table thead, #urban_table tbody, #urban_table tfoot, #urban_table tr, #urban_table td, #urban_table th {
+  border-style: none;
+}
+
+#urban_table p {
+  margin: 0;
+  padding: 0;
+}
+
+#urban_table .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: 0;
+  margin-right: auto;
+  color: #333333;
+  font-size: 13px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: hidden;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: transparent;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#urban_table .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#urban_table .gt_title {
+  color: #333333;
+  font-size: 13px;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#urban_table .gt_subtitle {
+  color: #333333;
+  font-size: 13px;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#urban_table .gt_heading {
+  background-color: #FFFFFF;
+  text-align: left;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#urban_table .gt_bottom_border {
+  border-bottom-style: hidden;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#urban_table .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #000000;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#urban_table .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 13px;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#urban_table .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 13px;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#urban_table .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#urban_table .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#urban_table .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #000000;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#urban_table .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#urban_table .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 13px;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: transparent;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: hidden;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#urban_table .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 13px;
+  font-weight: initial;
+  border-top-style: transparent;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: hidden;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#urban_table .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#urban_table .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#urban_table .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#urban_table .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: dashed;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#urban_table .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#urban_table .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#urban_table .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#urban_table .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#urban_table .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#urban_table .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#urban_table .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#urban_table .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#urban_table .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#urban_table .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#urban_table .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#urban_table .gt_table_body {
+  border-top-style: transparent;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: transparent;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#urban_table .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#urban_table .gt_footnote {
+  margin: 0px;
+  font-size: 13px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#urban_table .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#urban_table .gt_sourcenote {
+  font-size: 13px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#urban_table .gt_left {
+  text-align: left;
+}
+
+#urban_table .gt_center {
+  text-align: center;
+}
+
+#urban_table .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#urban_table .gt_font_normal {
+  font-weight: normal;
+}
+
+#urban_table .gt_font_bold {
+  font-weight: bold;
+}
+
+#urban_table .gt_font_italic {
+  font-style: italic;
+}
+
+#urban_table .gt_super {
+  font-size: 65%;
+}
+
+#urban_table .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#urban_table .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#urban_table .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#urban_table .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#urban_table .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#urban_table .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#urban_table .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#urban_table .gt_row {
+  padding: 5px 5px 5px 5px;
+}
+
+#urban_table .gt_sourcenote {
+  padding: 16px 0px 0px 0px;
+}
+
+#urban_table .gt_footnote {
+  padding: 16px 0px 0px 0px;
+}
+
+#urban_table .gt_subtitle {
+  padding: 0px 0px 2px 0px;
+}
+
+#urban_table .gt_col_heading {
+  padding: 10px 5px 10px 5px;
+}
+
+#urban_table .gt_col_headings {
+  padding: 0px 0px 0px 0px;
+  border-top-width: 0px;
+}
+
+#urban_table .gt_group_heading {
+  padding: 15px 0px 0px 0px;
+}
+
+#urban_table .gt_stub {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #d2d2d2;
+  border-top-color: black;
+  text-align: left;
+}
+
+#urban_table .gt_grand_summary_row {
+  border-bottom-width: 1px;
+  border-top-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #d2d2d2;
+  border-top-color: #d2d2d2;
+}
+
+#urban_table .gt_summary_row {
+  border-bottom-width: 1px;
+  border-top-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #d2d2d2;
+}
+
+#urban_table .gt_column_spanner {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="3" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="color: #696969; text-align: left; font-weight: normal; text-transform: uppercase;"></td>
+    </tr>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="color: #000000; font-size: 13px; font-weight: bold;" scope="col" id="species">species</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #000000; font-size: 13px; font-weight: bold;" scope="col" id="# conf. data"># conf. data</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #000000; font-size: 13px; font-weight: bold;" scope="col" id="# synthetic data"># synthetic data</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="species" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">Adelie</td>
+<td headers="# conf. data" class="gt_row gt_right" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">152</td>
+<td headers="# synthetic data" class="gt_row gt_right" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">138</td></tr>
+    <tr><td headers="species" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">Chinstrap</td>
+<td headers="# conf. data" class="gt_row gt_right" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">68</td>
+<td headers="# synthetic data" class="gt_row gt_right" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">68</td></tr>
+    <tr><td headers="species" class="gt_row gt_center" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">Gentoo</td>
+<td headers="# conf. data" class="gt_row gt_right" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">124</td>
+<td headers="# synthetic data" class="gt_row gt_right" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #d2d2d2; border-top-width: 0px; border-top-style: solid; border-top-color: #d2d2d2;">116</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page"><font color="#55b748">Question</font></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false"><font color="#55b748">Solution</font></a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p><em>Would the above counts be considered a global utility metric or a specific utility metric and why?</em></p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p><em>Would the above counts be considered a global utility metric or a specific utility metric and why?</em></p>
+<p>It’s likely a global utility metric because it evaluates the general statistical properties of the synthetic data compared to the confidential data.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="exercise-2" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="exercise-2"><span class="header-section-number">1.8</span> Exercise 2</h2>
+<p>Researchers <span class="citation" data-cites="mayer2016evaluating">(<a href="references.html#ref-mayer2016evaluating" role="doc-biblioref">Mayer, Mutchler, and Mitchell 2016</a>)</span> looked at telephone metadata, which included times, duration and outgoing numbers of telephone calls. They found that 1 of the records in the data placed frequent calls to a local firearm dealer that prominently advertises a specialty in the AR semiautomatic rifle platform. The participant also placed lengthy calls to the customer support hotline for a major firearm manufacturer which produces a popular AR line of rifles. Using publicly available data, they were able to confirm the participants identity and confirm that he owned an AR-15.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true"><font color="#55b748">Question</font></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false"><font color="#55b748">Solution</font></a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p><em>In this example what kinds of disclosures happened? (Hint: there were two!)</em></p>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p><em>In this example what kinds of disclosures happened? (Hint: there were two!)</em></p>
+<p>Identity disclosure and attribute disclosure</p>
+</div>
+</div>
+</div>
+</section>
+<section id="exercise-3" class="level2" data-number="1.9">
+<h2 data-number="1.9" class="anchored" data-anchor-id="exercise-3"><span class="header-section-number">1.9</span> Exercise 3</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true"><font color="#55b748">Question</font></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false"><font color="#55b748">Answer</font></a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<p><em>Why is it difficult to release public data that both maintains data utility and preserves individual privacy?</em></p>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<p><em>Why is it difficult to release public data that both maintains data utility and preserves individual privacy?</em></p>
+<p>There is a tradeoff between privacy and utility. Releasing a public dataset with no modifications would maximize utility, but provide no privacy protections. As privacy protections are applied, the utility of the dataset is reduced.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="suggested-reading---general-data-privacy" class="level2" data-number="1.10">
+<h2 data-number="1.10" class="anchored" data-anchor-id="suggested-reading---general-data-privacy"><span class="header-section-number">1.10</span> Suggested Reading - General Data Privacy</h2>
+<ul>
+<li><p>Matthews, G. J., &amp; Harel, O. (2011). Data confidentiality: A review of methods for statistical disclosure limitation and methods for assessing privacy. Statistics Surveys, 5, 1-29. <a href="https://projecteuclid.org/journals/statistics-surveys/volume-5/issue-none/Data-confidentiality--A-review-of-methods-for-statistical-disclosure/10.1214/11-SS074.pdf">link</a></p></li>
+<li><p>Bowen, CMK., (2021). “Personal Privacy and the Public Good: Balancing Data Privacy and Data Utility.” Urban Institute. <a href="https://www.urban.org/research/publication/personal-privacy-and-public-good-balancing-data-privacy-and-data-utility">link</a></p></li>
+<li><p>Benschop, T. and Welch, M. (n.d.) Statistical Disclosure Control for Microdata: A Practice Guide. Retrieved (insert date), from <a href="https://sdcpractice.readthedocs.io/en/latest/" class="uri">https://sdcpractice.readthedocs.io/en/latest/</a></p></li>
+</ul>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-fellegi1972question" class="csl-entry" role="listitem">
+Fellegi, Ivan P. 1972. <span>“On the Question of Statistical Confidentiality.”</span> <em>Journal of the American Statistical Association</em> 67 (337): 7–18.
+</div>
+<div id="ref-fienberg2018statistical" class="csl-entry" role="listitem">
+Fienberg, Stephen E, and Jiashun Jin. 2018. <span>“Statistical Disclosure Limitation for~ Data~ Access.”</span> In <em>Encyclopedia of Database Systems (2nd Ed.)</em>.
+</div>
+<div id="ref-matthews2011data" class="csl-entry" role="listitem">
+Matthews, Gregory J, and Ofer Harel. 2011. <span>“Data Confidentiality: A Review of Methods for Statistical Disclosure Limitation and Methods for Assessing Privacy.”</span> <em>Statistics Surveys</em> 5: 1–29.
+</div>
+<div id="ref-mayer2016evaluating" class="csl-entry" role="listitem">
+Mayer, Jonathan, Patrick Mutchler, and John C Mitchell. 2016. <span>“Evaluating the Privacy Properties of Telephone Metadata.”</span> <em>Proceedings of the National Academy of Sciences</em> 113 (20): 5536–41.
+</div>
+<div id="ref-sweeney2000simple" class="csl-entry" role="listitem">
+Sweeney, Latanya. 2000. <span>“Simple Demographics Often Identify People Uniquely.”</span> <em>Health (San Francisco)</em> 671 (2000): 1–34.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./a_intro.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Introduction and Setup</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./b_data-privacy-and-synthetic-data.html" class="pagination-link">
+        <span class="nav-page-text">Data Privacy and Synthesis</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

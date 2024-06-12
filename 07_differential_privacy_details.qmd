@@ -1,0 +1,809 @@
+---
+title: "Formally Private Definitions, Fundamental Mechanisms, and Algorithms"
+date: today
+format:
+  html:
+    fig-cap-location: top
+    number_sections: false
+    embed-resources: true
+    code-fold: false
+    toc: true
+    css: ../www/web_report.css
+editor_options:
+  chunk_output_type: console
+execute:
+  warning: false
+  message: false
+bibliography: references.bib
+---
+
+```{=html}
+<style>
+@import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+</style>
+```
+
+```{r setup}
+options(scipen = 999)
+
+library(tidyverse)
+library(urbnthemes)
+library(smoothmest)
+
+set_urbn_defaults()
+
+```
+
+## Recap
+
+### Formal privacy definitions
+In general, formally private methods have the following features [@bowen2021philosophy]: 
+
+- Ability to quantify and adjust the privacy-utility trade-off, typically through parameters.
+- Ability to rigorously and mathematically prove the maximum privacy loss that can result from the release of
+information.
+- Formal privacy definitions also allow one to *compose* multiple statistics. In other words, a data curator can compute
+the total privacy loss from multiple individual information releases.
+
+### Privacy loss budget
+
+Differential privacy and other formal privacy uses the concept of a **privacy loss budget**, typically represented mathematically as $\epsilon$. The privacy loss budget bounds the privacy risk associated with releasing data or query results.
+
+(*Note:* $\epsilon$ *is not the only privacy loss parameter, but we will use it here as a general representation of the privacy loss budget.*) 
+
+- A larger value of $\epsilon$ increases the maximum disclosure risk (the upper bound of the disclosure risk) associated with a given release of information.
+  - larger $\epsilon$ = less noise added to data = more accuracy, but less privacy
+  - smaller $\epsilon$ = more noise added to data = less accuracy, but more privacy
+
+- Extreme cases (note that these cases are not realistic in the sense of real-world applications, but are presented to demonstrate the intuition):
+  - $\epsilon \to \infty$
+    - all privacy will be lost; data retains all utility, but no privacy
+  - $\epsilon \to 0$
+    - no privacy is lost; data is completely distorted and no utility remains
+    
+## Formal Privacy Features
+
+Formal privacy is a relatively new set of definitions for quantifying the worst-case amount of information disclosed from statistics calculated on a private database. We provide conceptual and mathematical definitions below.
+
+### $\epsilon$-Differential privacy
+
+::: {.panel-tabset}
+
+### Assumptions Underlying Privacy Guarantee
+
+Formal privacy does not make assumptions about:
+
+- how a data intruder will attack the data;
+
+- the amount of external information or computing power an intruder has access to, now or in the future;
+
+- which information in the data poses a higher disclosure risk [@near2020differential].
+
+Instead, formal privacy assumes the worst-case scenario:
+
+- the intruder has information on every observation except one;
+  
+- the intruder has unlimited computational power;
+  
+- missing observation is the most extreme possible observation (or an extreme outlier) that could alter the statistic.
+
+### Mathematical Definition
+
+We mathematically define several formally private definitions and key theorems. We use the following notation: $X\in\mathbb{R}^{n\times r}$ is the confidential data set representing $n$ data points and $r$ variables and $M:\mathbb{R}^{n\times r}\rightarrow\mathbb{R}^k$ denotes the statistical query, i.e., $M$ is a function mapping $X$ to $k$ real numbers. We denote a randomized or noisy version of $M$ using $\mathcal{M}:\mathbb{R}^{n\times r}\rightarrow\mathbb{R}^k$, which is a function that satisfies a formally private definition.
+
+DP is the most widely known formal privacy definition. Privacy experts often refer to the original definition of DP as pure-DP or $\epsilon$-DP.
+
+**Differential Privacy** [@dwork2006calibrating]: A sanitization algorithm, $\mathcal{M}$, satisfies $\epsilon$-DP if for all subsets $S\subseteq Range(\mathcal{M})$ and for all $X,X'$ such that $d(X,X')=1$, \begin{equation}\label{eqn:dp}
+      \frac{\Pr(\mathcal{M}( X) \in S)}{ \Pr(\mathcal{M}( X')\in S)}\le \exp(\epsilon)
+  \end{equation} where $\epsilon>0$ is the privacy loss budget and $d(X,X')=1$ represents the possible ways that $X'$ differs from $X$ by one record.
+  
+:::
+
+::: {.callout-note}
+## Features to note
+- $\epsilon$ is logarithmic.
+- This is an inequality, not an equation; $\epsilon$ is up to us to define and represents an upper bound for disclosure risk that we are comfortable with for our particular data.
+:::
+
+### Global Sensitivity
+
+In addition to the privacy loss budget, most formally private methods rely on the concept called global sensitivity, which describes how resistant the formally private sanitizer is to the presence of outliers [@bowen2021philosophy]. We can think of the global sensitivity as another value that helps determine how much noise is needed to protect the released data or statistic, because some information is more sensitive than other information to outliers.
+
+Imagine the data we want to protect contains socioeconomic information and the question we want answered is, "What is the median wealth?" Under formal privacy, we must consider the change of the most extreme possible record that could exist in any given data that has demographic and financial information. In our example, that person is Elon Musk, who was the wealthiest person in the world in 2023.[^2] If Musk is present or absent in the data, the median wealth should not change too much. This means we can provide a more accurate answer by applying fewer alterations to the median income statistic, because it is less sensitive to the extreme outlier, Musk Consider, however, the question, "What is the average wealth?" Unlike the previous statistic, the answer would significantly change if Musk were present or absent from the data. To protect the extreme case at a given level of privacy loss, a formally private algorithm would need to provide a significantly less accurate answer by altering the statistic more.
+
+[^2]: At the time of session, Elon Musk is the wealthiest person in the world.
+
+### $l_1$-Global Sensitivity
+
+::: {.panel-tabset}
+#### Conceptual
+
+**$l_1$-Global Sensitivity** [@dwork2006calibrating]: The $l_1$-global sensitivity calculates the maximum amount a statistic can change in absolute value terms with the addition or removal of the most extreme possible observation.
+
+#### Technical
+
+**$l_1$-Global Sensitivity** [@dwork2006calibrating]: For all $X,X'$ such that $d(X,X')=1$, the global sensitivity of a function $M$ is \begin{equation}\label{eqn:gs}
+        \Delta_1 (M)= \underset{d(X,X')=1}{\text{sup}} \|M(X)-M(X') \|_1 
+    \end{equation}
+
+For scalars, the $l_1$-Global Sensitivity is $|M(X) - M(X')|$.
+:::
+
+### $l_2$-Global Sensitivity
+
+::: {.panel-tabset}
+#### Conceptual
+
+**$l_2$-Global Sensitivity** [@dwork2006calibrating]: $l_2$-global sensitivity calculates the maximum amount a statistic can change when the statistic is squared, summed, and rooted with the addition or removal of the most extreme possible observation.
+
+#### Technical
+
+**$l_2$-Global Sensitivity** [@dwork2006calibrating]:
+For all $X,X'$ such that $d(X,X')=1$, the global sensitivity of a function $M$ is
+
+$$\Delta_2 (M)= \underset{d(X,X')=1}{\text{sup}} \|M(X)-M(X') \|_2$$
+For scalars, the $l_2$-Global Sensitivity is $\sqrt{(M(X) - M(X'))^2}$.
+:::
+
+::: {.callout-note}
+## Important note
+Global sensitivity is straightforward but calculating the global sensitivity for some statistics can be very difficult. For instance, we cannot calculate a finite global sensitivity of sample mean if we do not bound the variable.
+:::
+
+## Exercise 1 
+
+::: {.panel-tabset}
+
+### <font color="#55b748">**Question**</font>
+
+Suppose we are interested in counting the number of sole proprietorships in Washington, DC. What are the $l_1$ and $l_2$ global sensitivities of this statistic?
+
+### <font color="#55b748">**Hint**</font>
+
+In other words, what is the maximum difference between $M(X)$ and $M(X')$ when $d(X,X')=1$?
+
+### <font color="#55b748">**Solution**</font>
+
+The answer is one. The most a count can change by adding or subtracting one observation is one!
+
+$\Delta_1 (M) = \Delta_2 (M) = 1$
+
+:::
+
+## Exercise 2 
+
+::: {.panel-tabset}
+
+### <font color="#55b748">**Question**</font>
+
+Suppose we are interested in calculating the total income of sole proprietorships in Washington, DC. What are the $l_1$ and $l_2$ global sensitivities of this statistic?
+
+### <font color="#55b748">**Hint**</font>
+
+In other words, what is the maximum difference between $M(X)$ and $M(X')$ when $d(X,X')=1$?
+
+### <font color="#55b748">**Solution**</font>
+
+The answer is $\infty$. A total can theoretically change by any amount with the addition or deletion of one observation.
+
+:::
+
+## Statistics
+
+### Counts
+
+Counts are the best explored statistics in differential privacy. With unbounded differential privacy, the global sensitivity of a count is always 1.
+
+For example, assume we are counting the number of billionaires in the United States. The most the count can change with the addition or removal of Elon Musk is one. 
+
+### Sums
+
+Calculating the global sensitivity is more difficult for other statistics than counts. The global sensitivity of a sum is unbounded because the addition or removal of one row can theoretically change the sum by any amount. 
+
+One approach is to **clip** or **truncate** values. If we assume that all observations are between 6 and 10, inclusive, then we can treat the global sensitivity as $10 - 6 = 4$. 
+
+* Differential privacy does not hold if we look at the data to determine the bounds.  
+* Bounds that truncate actual values bias statistics. 
+* This assumption is often problematic with economic data where distributions can be highly skewed. 
+
+### Means
+
+Means can be rewritten as two queries: a total divided by a count. 
+
+1. GS(sum) / GS(count) 
+
+Sometimes the number of observations is assumed to be known. In this case, the global sensitivity is smaller.
+
+2. GS(sum) / n if we assume n is known
+
+## DP Sanitizers
+
+A sanitizer protects against disclosure risk. A differentially private sanitizer protects against disclosure risk and meets the definition of differential privacy. If we know the global sensitivity of statistics, then we can often add noise in a way that sanitizers satisfy differential privacy. We review three fundamental formally private sanitizers. We call these sanitizers fundamental because they are the original formally private sanitizers that privacy researchers still often use as building blocks for more sophisticated formally private methods.
+
+### Laplace sanitizer
+@dwork2006calibrating first proposed protecting statistics by adding noise from a Laplace distribution, called the Laplace mechanism, but we can think of it as a Laplace sanitizer. The Laplace distribution is centered at zero and the distribution variability is the ratio of the privacy loss budget, $\epsilon$, over the $l_1$-global sensitivity of the statistic. Since the distribution is centered at zero, there is a higher probability of adding very little or no noise to the statistic. For the noise variability, if $\epsilon$ is large or the sensitivity of the statistic is low, then there is a higher probability of adding very little noise to the confidential data statistic. If $\epsilon$ is small or the sensitivity of the statistic is high, then there is a higher probability of adding a lot of noise to the statistic.
+
+::: {.panel-tabset}
+
+#### Conceptual
+
+The Laplace sanitizer satisfies $\epsilon$-DP by adding noise from a Laplace distribution to statistics. More sensitivity means more expected noise. More $\epsilon$ means less expected noise. 
+
+```{r echo = FALSE, fig.height = 3.5}
+ggplot() + 
+  geom_function(fun = function(x) smoothmest::ddoublex(x, mu = 0, lambda = 1),
+                 xlim = c(-8, 8),
+                aes(color = "l1-sensitivity = 1")) +
+  geom_function(fun = function(x) smoothmest::ddoublex(x, mu = 0, lambda = 2),
+                 xlim = c(-8, 8),
+                aes(color = "l1-sensitivity = 2")) + 
+  geom_function(fun = function(x) smoothmest::ddoublex(x, mu = 0, lambda = 3),
+                xlim = c(-8, 8),
+                aes(color = "l1-sensitivity = 3")) + 
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.title = element_blank(),
+        panel.grid.major = element_blank()) +
+  labs(title = "Laplace sanitizer with different sensitivities",
+       subtitle = "Epsilon = 1",
+       color = "Distribution")
+
+```
+
+```{r echo = FALSE, fig.height = 3.5}
+ggplot() + 
+  geom_function(fun = function(x) smoothmest::ddoublex(x, mu = 0, lambda = 10),
+                 xlim = c(-8, 8),
+                aes(color = "Epsilon = 0.1")) +
+  geom_function(fun = function(x) smoothmest::ddoublex(x, mu = 0, lambda = 2),
+                 xlim = c(-8, 8),
+                aes(color = "Epsilon = 0.5")) + 
+  geom_function(fun = function(x) smoothmest::ddoublex(x, mu = 0, lambda = 1),
+                xlim = c(-8, 8),
+                aes(color = "Epsilon = 1")) + 
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.title = element_blank(),
+        panel.grid.major = element_blank()) +
+  labs(title = "Laplace sanitizer with different epsilonsg",
+       subtitle = "l1-sensitivity = 1",
+       color = "Distribution")
+
+```
+
+#### Technical
+
+**Laplace Mechanism** [@dwork2006calibrating]: Given any function $M:\mathbb{R}^{n\times r}\rightarrow\mathbb{R}^k$, the Laplace mechanism is defined as: \begin{equation}\label{eqn:lap}
+        \mathcal{M}(X)=M(X)+(\eta_1,\ldots,\eta_k).
+    \end{equation} where $(\eta_1,\ldots,\eta_k)$ are i.i.d. $Laplace(0, \frac{\Delta_1(M)}{\epsilon})$.
+
+:::
+
+### Laplace sanitizer Example
+
+Let's consider a simple example with the Palmer Penguins data set. The data set contains 333 observations about Adelie, Chinstrap, and Gentoo penguins in Antarctica. Suppose we want to count how many penguins are Adelie penguins. 
+
+```{r}
+penguins <- palmerpenguins::penguins |>
+  drop_na()
+
+penguins
+
+```
+
+The global sensitivity is $\frac{\Delta_1(M)}{\epsilon} = \frac{1}{\epsilon}$. This means our formally private statistic is one draw from a Laplace distribution with center at the confidential statistics and scale parameter equal to $\frac{1}{\epsilon}$.
+
+Below is code for drawing values from a Laplace distribution, which we will call `laplace_sanitizer()`.
+```{r}
+# function to draw Laplace noise for one statistic 
+laplace_sanitizer <- function(sensitivity, epsilon, n = 1) {
+  
+  # lambda (distribution width) is sensitivity/privacy loss budget
+  l <- sensitivity / epsilon 
+  
+  # draw from Laplace distribution
+  noise <- smoothmest::rdoublex(n = n, # draw one observation (adding noise to one statistic)
+                                mu = 0, # centered at 0
+                                lambda = l) # scale based on l calculated above
+  
+  return(noise)
+  
+}
+
+```
+
+Let's calculate the statistic without any noise. 
+
+```{r}
+answer_conf <- sum(penguins$species == "Adelie")
+
+answer_conf
+
+```
+
+Now, let's calculate the statistic with noise that satisfies the definition of $\epsilon$-differential privacy.
+
+```{r}
+set.seed(1)
+answer_dp <- answer_conf + laplace_sanitizer(sensitivity = 1, epsilon = 0.1)
+
+answer_dp
+
+```
+
+*Maybe we got a lucky or unlucky draw from the Laplace distribution.* Let's calculate this statistic 100 times to understand the distribution of noisy statistics. This is purely for demonstration to understand the expectation of the noisy statistic. 
+
+```{r echo = FALSE}
+set.seed(20220427)
+
+tibble(
+  adelie_penguins = answer_conf + map_dbl(.x = 1:100, ~laplace_sanitizer(sensitivity = 1, epsilon = 0.1))
+) |>
+  ggplot(aes(adelie_penguins)) +
+  geom_histogram() +
+  geom_vline(xintercept = answer_conf, color = "#55b748", size = 2) +
+  geom_vline(xintercept = answer_dp, color = "#ec008b", size = 2) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2))) +
+  labs(
+    title = "100 Iterations of Counting Adelie Penguins",
+    subtitle = "Epsilon = 0.1; Truth in Green; Single Draw in Magenta"
+  )
+
+```
+
+### Gaussian Sanitizer
+Similar to the Laplace mechanism, the Gaussian mechanism adds random noise from a Gaussian distribution. The Gaussian distribution is also centered at zero and the distribution variability is the ratio of the privacy loss budget, $\epsilon$, over the $l_2$-global sensitivity of the statistic (mathematically, the Gaussian mechanism does not satisfy $l_1$-global sensitivity).
+
+::: {.panel-tabset}
+
+#### Conceptual
+
+The Gaussian sanitizer satisfies $(\epsilon,\delta)$-DP by adding noise from a Gaussian distribution (also known as Normal distribution or bell curve) to statistics. More sensitivity means more expected noise. More $\epsilon$ means less expected noise. More $\delta$ means less expected noise. 
+
+```{r echo = FALSE, fig.height = 3.5}
+gaussian_sd <- function(sensitivity, epsilon) {
+  
+  (sensitivity * sqrt(2 * log(1.25 / 10^-7))) / epsilon
+  
+}
+
+ggplot() + 
+  geom_function(fun = function(x) dnorm(x, mean = 0, sd = gaussian_sd(0.1, 1)),
+                 xlim = c(-8, 8),
+                aes(color = "l2-sensitivity = 1")) +
+  geom_function(fun = function(x) dnorm(x, mean = 0, sd = gaussian_sd(0.5, 1)),
+                 xlim = c(-8, 8),
+                aes(color = "l2-sensitivity = 2")) + 
+  geom_function(fun = function(x) dnorm(x, mean = 0, sd = gaussian_sd(1, 1)),
+                xlim = c(-8, 8),
+                aes(color = "l2-sensitivity = 3")) + 
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.title = element_blank(),
+        panel.grid.major = element_blank()) +
+  labs(title = "Gaussian sanitizer with different sensitivities",
+       subtitle = "Epsilon = 1, delta = 10^-7",
+       color = "Distribution")
+
+```
+
+```{r echo = FALSE, fig.height = 3.5}
+ggplot() + 
+  geom_function(fun = function(x) dnorm(x, mean = 0, sd = gaussian_sd(1, 0.5)),
+                 xlim = c(-8, 8),
+                aes(color = "Epsilon = 0.1")) +
+  geom_function(fun = function(x) dnorm(x, mean = 0, sd = gaussian_sd(1, 1)),
+                 xlim = c(-8, 8),
+                aes(color = "Epsilon = 0.5")) + 
+  geom_function(fun = function(x) dnorm(x, mean = 0, sd = gaussian_sd(1, 2)),
+                xlim = c(-8, 8),
+                aes(color = "Epsilon = 1")) + 
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.title = element_blank(),
+        panel.grid.major = element_blank()) +
+  labs(title = "Gaussian sanitizer with different epsilons",
+       subtitle = "l2-Global Sensitivity = 1, delta = 10^-7",
+       color = "Distribution")
+
+```
+
+#### Technical
+
+**Gaussian Mechanism** [@dwork2014algorithmic]: The Gaussian Mechanism satisfies $(\epsilon,\delta)$-DP by adding Gaussian noise with zero mean and variance, $\sigma^2$, such that
+
+$$\mathcal{M}(X)=M(X)+(\eta_1,\ldots,\eta_k)$$
+
+where $\eta_1,\ldots,\eta_k$ are independently drawn and $\sigma=\frac{\Delta_2(M)\sqrt{2 \log(1.25/\delta)}}{\epsilon}$. 
+
+This sanitizer includes two parameters: $\epsilon$ and $\delta$. We can think of $\delta$ as a small probability that the bound created by $\epsilon$ does not hold. 
+
+The Gaussian sanitizer uses $l_2$-Global Sensitivity.
+
+:::
+
+### Gaussian Sanitizer Example
+
+We repeat the last example, except this time using the Gaussian sanitizer.
+
+```{r}
+# function to draw Gaussian noise for one statistic 
+gaussian_sanitizer <- function(sensitivity, epsilon, delta) {
+  
+  # lambda (distribution width) is sensitivity/privacy loss budget
+  sigma <- (sensitivity * sqrt(2 * log(1.25 / delta))) / epsilon 
+  
+  # draw from Gaussian distribution
+  noise <- rnorm(n = 1, # draw one observation (adding noise to one statistic)
+                 mean = 0,
+                 sd = sigma) # scale based on l calculated above
+  
+  return(noise)
+  
+}
+
+```
+
+Let's calculate the statistic without any noise. 
+
+```{r}
+answer_conf <- sum(penguins$species == "Adelie")
+
+answer_conf
+
+```
+
+Now, let's calculate the statistic with noise that satisfies the definition of $(\epsilon, \delta)$-differential privacy.
+
+```{r}
+set.seed(1)
+answer_dp <- answer_conf + gaussian_sanitizer(sensitivity = 1, epsilon = 0.1, delta = 10^-7)
+
+answer_dp
+
+```
+
+
+
+*Maybe we got a lucky or unlucky draw from the Normal distribution.* Let's calculate this statistic 100 times to understand the distribution of noisy statistics. This is purely for demonstration to understand the expectation of the noisy statistic. 
+
+```{r echo = FALSE}
+set.seed(20220427)
+
+tibble(
+  adelie_penguins = answer_conf + map_dbl(.x = 1:100, ~gaussian_sanitizer(sensitivity = 1, epsilon = 0.1, delta = 10^-7))
+) |>
+  ggplot(aes(adelie_penguins)) +
+  geom_histogram() +
+  geom_vline(xintercept = answer_conf, color = "#55b748", size = 2) +
+  geom_vline(xintercept = answer_dp, color = "#ec008b", size = 2) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2))) +
+  labs(
+    title = "100 Iterations of Counting Adelie Penguins",
+    subtitle = "Epsilon = 0.1; Truth in Green; Single Draw in Magenta"
+  )
+
+```
+
+The Gaussian sanitizer is worse than the Laplace sanitizer! So why do we even need a Gaussian sanitizer?
+
+The Gaussian sanitizer can compose better for multiple queries. This is because the sum of two normally distributed random variables is normally distributed but the sum of two Laplacian distributed variables is not Laplacian. 
+
+## Important Theorems 
+
+As mentioned earlier, formal privacy requires methods to compose or account for the total privacy loss from each public data release or statistic. For example, composition or accounting allows the data curator to track the total privacy loss from multiple summary tables or multiple statistics requests from several data users. This is the main advantage of formal privacy compared to traditional SDC methods, which cannot quantify the total privacy loss. There are two main composition theorems: sequential and parallel. We also cover another important theorem (post-processing) that is essential in developing formally private methods.
+
+### Sequential Composition Theorem
+
+The sequential composition theorem allows the data users to calculate the privacy loss budget from multiple noisy statistics on the same part of the confidential data [@bun2016concentrated; @mcsherry2009privacy].
+
+![An Example of Sequential Composition](www/images/lesson05-sequential.png){#fig-seq-comp width=600}
+
+To help explain this concept, suppose we have establishment economic data set that reports the state of operation, the number of employees, and the average income for each establishment. We want to conduct three different analyses that cost $\epsilon_1=1$, $\epsilon_2=0.5$, and $\epsilon_3=0.5$, respectively. Since we are applying the three analyses on the entire data, sequential composition requires us to add up the individual privacy loss budgets for the total. i.e., $\epsilon_{total}=\epsilon_1+\epsilon_2+\epsilon_3=2$. @fig-seq-comp shows the application of sequential composition to our fictitious economic data set.
+
+Mathematically, a mechanism, $\mathcal{M}_j$, provides $\epsilon_j$-DP. The sequence of $\mathcal{M}_j(X)$ applied on the same $X$ provides $\sum_{j=1}^J\epsilon_j$-DP.
+
+### Sequential Composition Theorem Example
+
+Let's return the penguins example from above. Suppose  $\epsilon = 1$ and we want to count the number of "Adelie" penguins and the number of "Chinstrap" penguins.
+
+```{r}
+epsilon <- 1
+
+set.seed(20220505)
+
+sum(penguins$species == "Adelie") + laplace_sanitizer(sensitivity = 1, epsilon = epsilon / 2)
+
+sum(penguins$species == "Chinstrap") + laplace_sanitizer(sensitivity = 1, epsilon = epsilon / 2)
+
+```
+
+For reference, let's look at the truth. 
+
+```{r}
+sum(penguins$species == "Adelie")
+
+sum(penguins$species == "Chinstrap")
+
+```
+
+### Parallel Composition Theorem
+
+The parallel composition theorem allows data users to calculate the privacy loss budget from multiple noisy statistics on different or disjoint parts of the confidential data [@bun2016concentrated; @mcsherry2009privacy].
+
+![An Example of Parallel Composition](www/images/lesson05-parallel.png){#fig-para-comp width=600}
+
+Using the same example as before in @fig-seq-comp, suppose we apply three analyses to partitions of the data (i.e., the three different states) that cost $\epsilon_1=1$, $\epsilon_2=0.5$, and $\epsilon_3=0.5$, respectively. Since we are applying the three analyses on disjoint subsets of the data, parallel composition states that the total privacy loss budget is the maximum privacy loss budget of the three analyses. i.e., $\epsilon_{total}=\max(\epsilon_1,\epsilon_2,\epsilon_3)=1$. @fig-para-comp shows the application of sequential composition to our fictitious economic data set.
+
+Mathematically, let $D_j$ be disjoint subsets of the input domain $D$. The sequence of $\mathcal{M}_j(X\cap D_j)$ provides $\max_{j \in \{1,\ldots,J\}} \epsilon_j$-DP
+
+### Parallel Composition Theorem Example
+
+Let's consider a larger data set with 53,940 observations about diamonds. Suppose we want to calculate a differenitally private histogram of diamond sizes with bins [0, 1], (1, 2], (2, 3], (3, 4], (4, 5], and (5,6] with $\epsilon = 0.1$. 
+
+```{r}
+diamonds_conf <- count(diamonds, carat = ceiling(carat))
+
+diamonds_conf
+
+
+```
+
+One approach is to use $\frac{\epsilon = 0.1}{6}$ for each of the six counting queries. This is based on sequential composition.
+
+```{r}
+epsilon <- 0.1
+
+set.seed(10)
+
+diamonds_conf <- bind_cols(
+  diamonds_conf,
+  sequential = diamonds_conf$n + laplace_sanitizer(sensitivity = 1, epsilon = epsilon / 6, n = 6)
+)
+
+diamonds_conf
+
+```
+
+The bins for `carat` partition the data set and each bin is a disjoint subset of the data. Therefore, we can use parallel composition and get more accurate differentially private counts!
+
+```{r}
+set.seed(11)
+
+diamonds_conf <- bind_cols(
+  diamonds_conf,
+  parallel = diamonds_conf$n + laplace_sanitizer(sensitivity = 1, epsilon = epsilon, n = 6)
+)
+
+diamonds_conf
+
+```
+
+### Post-Processing Theorem
+
+Another important theorem is the post-processing theorem that allows the continued use of formally private information without losing the privacy guarantee [@bun2016concentrated; @dwork2006calibrating; @nissim2007smooth]. In other words, if someone modifies a formally private data set or statistic without using additional information from the confidential data, then that data set or statistic is still formally private.
+
+For example, if the number of employees from a formally private method said there are 3.7 employees, then we could round that value to 4 without leaking more information. Simply put, the post-processing theorem makes the data usable after formally private noise is added.
+    
+Mathematically, if $\mathcal{M}$ is a sanitizer that satisfies $\epsilon$-DP and $g$ is any function, then $g\left(\mathcal{M}(X)\right)$ also satisfies $\epsilon$-DP.
+
+Post-processing also provides the opportunity to improve utility. Data stewards can use available public or expert knowledge to reduce the amount of noise without accruing additional privacy loss. The public information can come from data released without formal privacy or from individuals who are comfortable sharing their information without noise. Rounding and eliminating impossible values like negative counts are common types of post-processing. There are also types of post-processing that can improve accuracy by leveraging information calculated from the same data set.
+
+::: {.callout-note}
+## A key takeaway
+Formal privacy is transparent and allows users to account for the noise introduced into statistics. Post-processing can give up some of this transparency and make it more difficult to account for the noise added to statistics.
+:::
+
+## Exercise 3
+
+Consider a simulated data set with information about small businesses (0-20 employees) in Texas and Vermont. 
+
+```{r}
+set.seed(20220509)
+small_businesses <- bind_rows(
+  Texas = tibble(
+    employees = rpois(n = 100010, lambda = 10),
+    income = rlnorm(n = 100010, meanlog = 10, sdlog = 2)
+  ),
+  Vermont = tibble(
+    employees = rpois(n = 403, lambda = 10),
+    income = rlnorm(n = 403, meanlog = 10, sdlog = 2)
+  ),
+  .id = "state"
+) |>
+  mutate(employees = if_else(employees > 20, 20L, employees))
+
+```
+
+::: {.panel-tabset}
+
+## <font color="#55b748">**Question**</font>
+
+Using the Laplace sanitizer, calculate the number of small businesses in Texas and Vermont (count) with the overall $\epsilon = 0.1$. Use the parallel composition theorem.
+
+```{r eval = FALSE}
+ex3_conf <- count(small_businesses, state)
+
+ex3_conf
+
+set.seed(46)
+bind_cols(
+  ex3_conf,
+  ex3_conf$n + laplace_sanitizer(
+    sensitivity = ### ______, 
+    epsilon = ### ______, 
+    n = 2
+  )
+)
+
+```
+
+- Which state has more absolute error introduced into its count?
+- Which state has more relative error introduced into its count?
+
+## <font color="#55b748">**Hint**</font>
+
+The observations from Texas and Vermont are disjoint, so we can use the full $\epsilon = 0.1$ for each statistics instead of splitting it across the statistics. 
+
+```{r}
+ex3_conf <- count(small_businesses, state)
+
+ex3_conf
+
+set.seed(46)
+bind_cols(
+  ex3_conf,
+  n_dp = ex3_conf$n + laplace_sanitizer(
+    sensitivity = 1, 
+    epsilon = 0.1, 
+    n = 2
+  )
+)
+
+```
+
+The absolute error is larger for Texas, but the relative error is much bigger for Vermont. 
+
+:::
+
+## Exercise 4
+
+::: {.panel-tabset}
+
+### <font color="#55b748">**Question**</font>
+
+Using the Laplace sanitizer, calculate the number of employees in the entire data set (sum) with the overall $\epsilon = 0.1$. We know from auxiliary information that the number of employees varies from 0 to 20 because they are small businesses. 
+
+```{r eval = FALSE}
+ex4_conf <- small_businesses |>
+  summarize(employees = sum(employees))
+
+set.seed(47)
+bind_cols(
+  ex4_conf,
+  employees_dp = ex4_conf$employees + laplace_sanitizer(
+    sensitivity = ### ______, 
+    epsilon = ### ______, 
+    n = 1
+  )
+)
+
+```
+
+### <font color="#55b748">**Hint**</font>
+
+```{r}
+ex4_conf <- small_businesses |>
+  summarize(employees = sum(employees))
+
+set.seed(47)
+bind_cols(
+  ex4_conf,
+  employees_dp = ex4_conf$employees + laplace_sanitizer(
+    sensitivity = 20, 
+    epsilon = 0.1, 
+    n = 1
+  )
+)
+
+```
+
+:::
+
+## Other Formal Privacy Definitions
+
+### Approximate Differential Privacy
+
+Approximate Differential Privacy, also known as $(\epsilon, \delta)$-Differential Privacy is a relxation of $\epsilon$-Differential Privacy. We saw this definition above with the Gaussian sanitizer. 
+
+**$(\epsilon, \delta)$-Differential Privacy** [@dwork2006our]: A sanitization algorithm, $\mathcal{M}$, satisfies $(\epsilon, \delta)$-DP if for all $X, X'$ that are $d(X,X')=1$,
+
+$$\Pr(\mathcal{M}( X) \in S)\le \exp(\epsilon) \Pr(\mathcal{M}( X')\in S) + \delta$$
+where $\delta\in [0,1]$. 
+
+We can think of $\delta$ as a small probability that the bound created by $\epsilon$ does not hold. $\epsilon$-DP is a special case of $(\epsilon, \delta)$-DP when $\delta=0$.
+
+### Zero-Concentrated Differential Privacy
+
+Zero-Concentrated Differential Privacy is another relaxation of $\epsilon$-Differential Privacy. This definition is used by the Census Bureau for the 2020 Decennial Census. 
+
+**Zero-Concentrated Differential Privacy** [@bun2016concentrated]: A sanitization algorithm, $\mathcal{M}$, satisfies $(\xi, \rho)$-zero-concentrated differential privacy if for all $X, X'$ that are $d(X,X')=1$ and $\alpha\in (1, \infty)$,
+
+$$D_\alpha(\mathcal{M}(X)||\mathcal{M}(X'))\leq\xi+\rho\alpha$$
+
+where $D_\alpha(\mathcal{M}(X)||\mathcal{M}(X'))$ is the $\alpha$-R\'enyi divergence % between the distribution of $\mathcal{M}(X)$ and the distribution of $\mathcal{M}(X')$, $\xi$ and $\rho$ are positive constants, and $\alpha \in (1,\infty)$.
+
+Zero-Concentrated Differential Privacy, also known as R\'enyi Differential Privacy, only holds for counts.
+
+## Unpacking $\epsilon$
+
+Differential privacy states that the log of the ratio of the probability that any individual observation was in the data that generated the output vs. not in the data that generated the output is bounded by the value of $\epsilon$. 
+
+$$\frac{\Pr(\mathcal{M}( X) \in S)}{ \Pr(\mathcal{M}( X')\in S)}\le \exp(\epsilon)$$
+
+The bound is in exponential units, so modest increases in $\epsilon$ correspond with large increases in the ratio of the probabilities. 
+
+Early differential privacy researchers thought $\epsilon = 1$ or $\epsilon = 2$ were upper bounds on $\epsilon$. Today, much higher values of $\epsilon$ are used. The April 2021 Decennial Census demonstration data used $\epsilon = 4.0$ and $\epsilon = 10.3$ for the person-level file. The Decennial Census ended up using $\epsilon = 17.14$ for the person-level file and $\epsilon = 2.47$ for the housing unit data, with $\delta = 10^{−10}$ for each.
+
+Let's consider the ratios of the probabilities for different values of $\epsilon$:
+
+```{r echo = FALSE}
+tibble(
+  epsilon = c(0.25, 0.5, 0.75, 1, 2, 4, 6, 8, 10.3, 17.14)
+) |>
+  mutate(ratio = round(exp(epsilon)))
+
+```
+
+*It is tough to reason what a ratio of __`r round(exp(17.14))`__ even means.*
+
+## Key Takeaways
+
+* Differential privacy places a bound on the amount of information released under extreme assumptions about the knowledge of an attacker and their computing power.
+* Global sensitivity measures how much a statistic can change with the addition or removal of the most extreme possible value. 
+* Sanitizers, like the Laplace sanitizer, satisfy differential privacy by adding a specific amount of random noise to statistics. 
+* Higher values of $\epsilon$ mean more information is potentially released.
+* Sanitizers applied to statistics with higher global sensitivity require more noise to satisfy a definition of differential privacy than with statistics with lower global sensitivity. 
+
+## Bonus Exercises
+
+### Exercise 5
+::: {.panel-tabset}
+
+#### <font color="#55b748">**Question**</font>
+
+The Laplace sanitizer uses l2-global sensitivity.
+
+  - True
+  - False
+
+#### <font color="#55b748">**Solution**</font>
+
+The Laplace sanitizer uses l2-global sensitivity.
+
+  - True
+  - **False**
+  
+:::
+
+### Exercise 6
+::: {.panel-tabset}
+
+#### <font color="#55b748">**Question**</font>
+
+This theorem improves accuracy when data can be broken into disjoint subsets.
+
+  - Sequential composition theorem
+  - Postprocessing theorem
+  - Parallel composition theorem
+
+#### <font color="#55b748">**Solution**</font>
+
+This theorem improves accuracy when data can be broken into disjoint subsets.
+
+  - Sequential composition theorem
+  - Postprocessing theorem
+  - **Parallel composition theorem**
+  
+:::
+
