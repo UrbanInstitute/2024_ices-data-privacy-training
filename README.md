@@ -4,6 +4,8 @@
 
 This book contains materials for **Introduction to Data Privacy and Data Synthesis Techniques** at the [2024 International Conference on Establishment Statistics](https://ww2.amstat.org/meetings/ices/2024/) in Glasgow, Scotland. 
 
+All of the rendered materials are available on a website [here](https://urbaninstitute.github.io/2024_ices-data-privacy-training/).
+
 ## Abstract
 
 This course will provide an overview of current data privacy methodology, focusing on the generation of synthetic data and application of differentially private methods. Through examinations of case studies, attendees will learn to apply data privacy techniques and evaluate the resulting disclosure risk and data utility.
