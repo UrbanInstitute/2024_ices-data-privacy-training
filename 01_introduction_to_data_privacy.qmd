@@ -273,6 +273,22 @@ A **threat model** is a set of assumptions for how data intruders will attack th
 
 -   Formally private methods don't label particular variables as confidential/sensitive, but instead treats them all as sensitive due to the possibility of reidentifcation.
 
+## Tiered Access
+
+::: {.callout-tip}
+## Tiered Access
+
+**Tiered access** is a data governance model that provides different levels of access to data users based on their needs and disclosure risks of their research projects.
+:::
+
+- Tiered access can include:
+    - Public-use data files
+    - Synthetic public-use data files
+    - Restricted-use data in online data enclaves
+    - Restricted-use data in on-premise research centers
+    - Formally private query systems
+- The Urban Institute is working to develop public-use synthetic data sets and formally private validation servers as a model of tiered access. 
+
 ## Measuring Utility Metrics and Disclosure Risks
 
 ### Disclosure Risks

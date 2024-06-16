@@ -265,7 +265,7 @@ ggplot() +
         axis.ticks.y=element_blank(),
         axis.title = element_blank(),
         panel.grid.major = element_blank()) +
-  labs(title = "Laplace sanitizer with different epsilonsg",
+  labs(title = "Laplace sanitizer with different epsilons",
        subtitle = "l1-sensitivity = 1",
        color = "Distribution")
 
@@ -512,9 +512,11 @@ epsilon <- 1
 
 set.seed(20220505)
 
-sum(penguins$species == "Adelie") + laplace_sanitizer(sensitivity = 1, epsilon = epsilon / 2)
+sum(penguins$species == "Adelie") + 
+  laplace_sanitizer(sensitivity = 1, epsilon = epsilon / 2)
 
-sum(penguins$species == "Chinstrap") + laplace_sanitizer(sensitivity = 1, epsilon = epsilon / 2)
+sum(penguins$species == "Chinstrap") + 
+  laplace_sanitizer(sensitivity = 1, epsilon = epsilon / 2)
 
 ```
 
@@ -558,7 +560,8 @@ set.seed(10)
 
 diamonds_conf <- bind_cols(
   diamonds_conf,
-  sequential = diamonds_conf$n + laplace_sanitizer(sensitivity = 1, epsilon = epsilon / 6, n = 6)
+  sequential = diamonds_conf$n + 
+    laplace_sanitizer(sensitivity = 1, epsilon = epsilon / 6, n = 6)
 )
 
 diamonds_conf
@@ -572,7 +575,8 @@ set.seed(11)
 
 diamonds_conf <- bind_cols(
   diamonds_conf,
-  parallel = diamonds_conf$n + laplace_sanitizer(sensitivity = 1, epsilon = epsilon, n = 6)
+  parallel = diamonds_conf$n + 
+    laplace_sanitizer(sensitivity = 1, epsilon = epsilon, n = 6)
 )
 
 diamonds_conf
@@ -641,7 +645,7 @@ bind_cols(
 - Which state has more absolute error introduced into its count?
 - Which state has more relative error introduced into its count?
 
-## <font color="#55b748">**Hint**</font>
+## <font color="#55b748">**Solution**</font>
 
 The observations from Texas and Vermont are disjoint, so we can use the full $\epsilon = 0.1$ for each statistics instead of splitting it across the statistics. 
 
@@ -690,7 +694,7 @@ bind_cols(
 
 ```
 
-### <font color="#55b748">**Hint**</font>
+### <font color="#55b748">**Solution**</font>
 
 ```{r}
 ex4_conf <- small_businesses |>

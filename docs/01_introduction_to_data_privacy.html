@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2024-06-12">
+<meta name="dcterms.date" content="2024-06-16">
 
 <title>Introduction to Data Privacy and Data Synthesis Techniques - 1&nbsp; Introduction to Data Privacy</title>
 <style>
@@ -234,15 +234,16 @@ div.csl-indent {
   <li><a href="#data-privacy-workflow" id="toc-data-privacy-workflow" class="nav-link" data-scroll-target="#data-privacy-workflow"><span class="header-section-number">1.3</span> Data Privacy Workflow</a></li>
   <li><a href="#overview-of-sdc" id="toc-overview-of-sdc" class="nav-link" data-scroll-target="#overview-of-sdc"><span class="header-section-number">1.4</span> Overview of SDC</a></li>
   <li><a href="#formal-privacy" id="toc-formal-privacy" class="nav-link" data-scroll-target="#formal-privacy"><span class="header-section-number">1.5</span> Formal Privacy</a></li>
-  <li><a href="#measuring-utility-metrics-and-disclosure-risks" id="toc-measuring-utility-metrics-and-disclosure-risks" class="nav-link" data-scroll-target="#measuring-utility-metrics-and-disclosure-risks"><span class="header-section-number">1.6</span> Measuring Utility Metrics and Disclosure Risks</a>
+  <li><a href="#tiered-access" id="toc-tiered-access" class="nav-link" data-scroll-target="#tiered-access"><span class="header-section-number">1.6</span> Tiered Access</a></li>
+  <li><a href="#measuring-utility-metrics-and-disclosure-risks" id="toc-measuring-utility-metrics-and-disclosure-risks" class="nav-link" data-scroll-target="#measuring-utility-metrics-and-disclosure-risks"><span class="header-section-number">1.7</span> Measuring Utility Metrics and Disclosure Risks</a>
   <ul class="collapse">
-  <li><a href="#disclosure-risks" id="toc-disclosure-risks" class="nav-link" data-scroll-target="#disclosure-risks"><span class="header-section-number">1.6.1</span> Disclosure Risks</a></li>
-  <li><a href="#utility-measures" id="toc-utility-measures" class="nav-link" data-scroll-target="#utility-measures"><span class="header-section-number">1.6.2</span> Utility Measures</a></li>
+  <li><a href="#disclosure-risks" id="toc-disclosure-risks" class="nav-link" data-scroll-target="#disclosure-risks"><span class="header-section-number">1.7.1</span> Disclosure Risks</a></li>
+  <li><a href="#utility-measures" id="toc-utility-measures" class="nav-link" data-scroll-target="#utility-measures"><span class="header-section-number">1.7.2</span> Utility Measures</a></li>
   </ul></li>
-  <li><a href="#exercise-1" id="toc-exercise-1" class="nav-link" data-scroll-target="#exercise-1"><span class="header-section-number">1.7</span> Exercise 1</a></li>
-  <li><a href="#exercise-2" id="toc-exercise-2" class="nav-link" data-scroll-target="#exercise-2"><span class="header-section-number">1.8</span> Exercise 2</a></li>
-  <li><a href="#exercise-3" id="toc-exercise-3" class="nav-link" data-scroll-target="#exercise-3"><span class="header-section-number">1.9</span> Exercise 3</a></li>
-  <li><a href="#suggested-reading---general-data-privacy" id="toc-suggested-reading---general-data-privacy" class="nav-link" data-scroll-target="#suggested-reading---general-data-privacy"><span class="header-section-number">1.10</span> Suggested Reading - General Data Privacy</a></li>
+  <li><a href="#exercise-1" id="toc-exercise-1" class="nav-link" data-scroll-target="#exercise-1"><span class="header-section-number">1.8</span> Exercise 1</a></li>
+  <li><a href="#exercise-2" id="toc-exercise-2" class="nav-link" data-scroll-target="#exercise-2"><span class="header-section-number">1.9</span> Exercise 2</a></li>
+  <li><a href="#exercise-3" id="toc-exercise-3" class="nav-link" data-scroll-target="#exercise-3"><span class="header-section-number">1.10</span> Exercise 3</a></li>
+  <li><a href="#suggested-reading---general-data-privacy" id="toc-suggested-reading---general-data-privacy" class="nav-link" data-scroll-target="#suggested-reading---general-data-privacy"><span class="header-section-number">1.11</span> Suggested Reading - General Data Privacy</a></li>
   </ul>
 </nav>
     </div>
@@ -262,7 +263,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 12, 2024</p>
+      <p class="date">June 16, 2024</p>
     </div>
   </div>
   
@@ -547,10 +548,37 @@ Threat model
 <li><p>Formally private methods don’t label particular variables as confidential/sensitive, but instead treats them all as sensitive due to the possibility of reidentifcation.</p></li>
 </ul>
 </section>
-<section id="measuring-utility-metrics-and-disclosure-risks" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="measuring-utility-metrics-and-disclosure-risks"><span class="header-section-number">1.6</span> Measuring Utility Metrics and Disclosure Risks</h2>
-<section id="disclosure-risks" class="level3" data-number="1.6.1">
-<h3 data-number="1.6.1" class="anchored" data-anchor-id="disclosure-risks"><span class="header-section-number">1.6.1</span> Disclosure Risks</h3>
+<section id="tiered-access" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="tiered-access"><span class="header-section-number">1.6</span> Tiered Access</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tiered Access
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Tiered access</strong> is a data governance model that provides different levels of access to data users based on their needs and disclosure risks of their research projects.</p>
+</div>
+</div>
+<ul>
+<li>Tiered access can include:
+<ul>
+<li>Public-use data files</li>
+<li>Synthetic public-use data files</li>
+<li>Restricted-use data in online data enclaves</li>
+<li>Restricted-use data in on-premise research centers</li>
+<li>Formally private query systems</li>
+</ul></li>
+<li>The Urban Institute is working to develop public-use synthetic data sets and formally private validation servers as a model of tiered access.</li>
+</ul>
+</section>
+<section id="measuring-utility-metrics-and-disclosure-risks" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="measuring-utility-metrics-and-disclosure-risks"><span class="header-section-number">1.7</span> Measuring Utility Metrics and Disclosure Risks</h2>
+<section id="disclosure-risks" class="level3" data-number="1.7.1">
+<h3 data-number="1.7.1" class="anchored" data-anchor-id="disclosure-risks"><span class="header-section-number">1.7.1</span> Disclosure Risks</h3>
 <ul>
 <li>Generally there are 3 kinds of disclosure risk:</li>
 </ul>
@@ -566,8 +594,8 @@ Threat model
 <li>Important note: acceptable disclosure risks are usually determined by law.</li>
 </ul>
 </section>
-<section id="utility-measures" class="level3" data-number="1.6.2">
-<h3 data-number="1.6.2" class="anchored" data-anchor-id="utility-measures"><span class="header-section-number">1.6.2</span> Utility Measures</h3>
+<section id="utility-measures" class="level3" data-number="1.7.2">
+<h3 data-number="1.7.2" class="anchored" data-anchor-id="utility-measures"><span class="header-section-number">1.7.2</span> Utility Measures</h3>
 <ul>
 <li>Generally there are 2 ways to measure utility of the data:</li>
 </ul>
@@ -580,8 +608,8 @@ Threat model
 </ul>
 </section>
 </section>
-<section id="exercise-1" class="level2" data-number="1.7">
-<h2 data-number="1.7" class="anchored" data-anchor-id="exercise-1"><span class="header-section-number">1.7</span> Exercise 1</h2>
+<section id="exercise-1" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="exercise-1"><span class="header-section-number">1.8</span> Exercise 1</h2>
 <p>Let’s say a researcher generates a synthetic version of a dataset on penguins species. The first 5 rows of the gold standard dataset looks like this:</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -1663,8 +1691,8 @@ Threat model
 </div>
 </div>
 </section>
-<section id="exercise-2" class="level2" data-number="1.8">
-<h2 data-number="1.8" class="anchored" data-anchor-id="exercise-2"><span class="header-section-number">1.8</span> Exercise 2</h2>
+<section id="exercise-2" class="level2" data-number="1.9">
+<h2 data-number="1.9" class="anchored" data-anchor-id="exercise-2"><span class="header-section-number">1.9</span> Exercise 2</h2>
 <p>Researchers <span class="citation" data-cites="mayer2016evaluating">(<a href="references.html#ref-mayer2016evaluating" role="doc-biblioref">Mayer, Mutchler, and Mitchell 2016</a>)</span> looked at telephone metadata, which included times, duration and outgoing numbers of telephone calls. They found that 1 of the records in the data placed frequent calls to a local firearm dealer that prominently advertises a specialty in the AR semiautomatic rifle platform. The participant also placed lengthy calls to the customer support hotline for a major firearm manufacturer which produces a popular AR line of rifles. Using publicly available data, they were able to confirm the participants identity and confirm that he owned an AR-15.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true"><font color="#55b748">Question</font></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false"><font color="#55b748">Solution</font></a></li></ul>
@@ -1679,8 +1707,8 @@ Threat model
 </div>
 </div>
 </section>
-<section id="exercise-3" class="level2" data-number="1.9">
-<h2 data-number="1.9" class="anchored" data-anchor-id="exercise-3"><span class="header-section-number">1.9</span> Exercise 3</h2>
+<section id="exercise-3" class="level2" data-number="1.10">
+<h2 data-number="1.10" class="anchored" data-anchor-id="exercise-3"><span class="header-section-number">1.10</span> Exercise 3</h2>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true"><font color="#55b748">Question</font></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false"><font color="#55b748">Answer</font></a></li></ul>
 <div class="tab-content">
@@ -1694,8 +1722,8 @@ Threat model
 </div>
 </div>
 </section>
-<section id="suggested-reading---general-data-privacy" class="level2" data-number="1.10">
-<h2 data-number="1.10" class="anchored" data-anchor-id="suggested-reading---general-data-privacy"><span class="header-section-number">1.10</span> Suggested Reading - General Data Privacy</h2>
+<section id="suggested-reading---general-data-privacy" class="level2" data-number="1.11">
+<h2 data-number="1.11" class="anchored" data-anchor-id="suggested-reading---general-data-privacy"><span class="header-section-number">1.11</span> Suggested Reading - General Data Privacy</h2>
 <ul>
 <li><p>Matthews, G. J., &amp; Harel, O. (2011). Data confidentiality: A review of methods for statistical disclosure limitation and methods for assessing privacy. Statistics Surveys, 5, 1-29. <a href="https://projecteuclid.org/journals/statistics-surveys/volume-5/issue-none/Data-confidentiality--A-review-of-methods-for-statistical-disclosure/10.1214/11-SS074.pdf">link</a></p></li>
 <li><p>Bowen, CMK., (2021). “Personal Privacy and the Public Good: Balancing Data Privacy and Data Utility.” Urban Institute. <a href="https://www.urban.org/research/publication/personal-privacy-and-public-good-balancing-data-privacy-and-data-utility">link</a></p></li>

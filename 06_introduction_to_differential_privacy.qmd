@@ -56,7 +56,7 @@ A common theme throughout this lesson was that many of these metrics require jud
 
 -   When evaluating disclosure risk, are we making assumptions about how the attacker will approach the data or resources the attacker has access to? Do these assumptions hold in the context of the domain?
 
-**Motivation for today:** what if we could create a mathematical bound on the disclosure risk for any question asked of the confidential data?
+**Motivation:** what if we could create a mathematical bound on the disclosure risk for any question asked of the confidential data?
 
 In this session, we will cover a high-level overview of formal privacy, differential privacy, and formally private mechanisms. This summary will involve some mathematical intuition and present some mathematical equations.
 
